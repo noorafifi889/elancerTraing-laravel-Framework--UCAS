@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\HomeController;  
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -10,7 +11,7 @@ use App\Http\Controllers\PostController;
 Route::view('/', 'welcome');
 
 
-Route::get('/posts',[PostController::class,'index']); //callable code 
+Route::get('/',HomeController::class)->name('home'); //callable code 
 
 Route::get('/posts/{id}/{slug}',[PostController::class,'show'])
      ->where(
