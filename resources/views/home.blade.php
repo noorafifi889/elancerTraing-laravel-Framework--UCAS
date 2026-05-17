@@ -1,21 +1,16 @@
- @extends("layouts.main")     // This line indicates that this Blade template extends a layout file named "main.blade.php" located in the "layouts" directory. It allows us to use the structure defined in the main layout and fill in specific sections with content defined in this template.
- 
-@section('style')
-<style>
+<x-layouts.main-layout title="Home" main-style="pt-10 pb-section-gap max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-12 gap-8">
+<x-slot:style>
+        <style>
+            .article-column {
+                max-width: 720px;
+            }
+            /* إضافة هيدينج توب لأن الهيدر fixed حتى لا يغطي المحتوى */
+            body { padding-top: 64px; } 
+        </style>
+    </x-slot:style>
 
-.article-column {
-    max-width: 720px;
-}
 
-    </style>
-
-@endsection
-
-@section('title',"Home")
- @section("main-style" ,"pt-10 pb-section-gap max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-12 gap-8")
-
- @section('contant')
- <aside class="hidden md:block md:col-span-2 space-y-8">
+        <aside class="hidden md:block md:col-span-2 space-y-8">
             <div class="space-y-4">
                 <h3 class="font-ui-label text-ui-label uppercase tracking-widest text-secondary font-bold">Discover</h3>
                 <ul class="space-y-2">
@@ -159,17 +154,25 @@
         <!-- Right Sidebar: Trending & Who to Follow -->
         <aside class="hidden lg:block lg:col-span-3 space-y-12">
             <!-- Trending Section -->
-       @include('asides.Trending')
+            @include('asides.Trending')
             <!-- Who to Follow -->
-            @include('asides.follower')
+            <x-recommended-authors title= "Followers" count="3" />
+
             <!-- Newsletter Sign Up -->
-        @include('asides.Newsletter')
+            <x-widgets.newslatter>
+                <x-slot:helper>
+                    <h1> hello world</h1>
+                </x-slot:helper>
+                <button
+                    class="w-full py-2 bg-white text-primary font-ui-button text-ui-button rounded hover:bg-opacity-90 transition-all">Subscribe</button>
+            </x-widgets.newslatter>
+            {{-- @include('asides.Newsletter') --}}
         </aside>
 
-@endsection
-  
-@section('nav')
-@parent
-                   <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
-                        href="#">child</a>
-@endsection
+
+    @section('nav')
+        @parent
+        <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
+            href="#">child</a>
+    @endsection
+</x-layouts.main-layout>

@@ -6,6 +6,8 @@
                     <input
                         class="w-full px-4 py-2 rounded bg-white/10 border border-white/20 text-white placeholder:text-white/60 focus:ring-1 focus:ring-white focus:outline-none"
                         placeholder="email@example.com" type="email" />
-                   
+                   {{ $slot }}
                 </div>
+
+                {{ $helper }}
             </div>
