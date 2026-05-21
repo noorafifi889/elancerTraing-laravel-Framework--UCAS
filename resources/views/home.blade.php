@@ -1,4 +1,4 @@
-<x-layouts.main-layout title="Home" main-style="pt-10 pb-section-gap max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-12 gap-8">
+<x-layout title="Home" main-style="pt-10 pb-section-gap max-w-container-max mx-auto px-gutter grid grid-cols-1 md:grid-cols-12 gap-8">
 <x-slot:style>
         <style>
             .article-column {
@@ -175,4 +175,4 @@
         <a class="text-primary font-bold border-b-2 border-primary pb-1 font-ui-label text-ui-label hover:text-primary transition-colors duration-200"
             href="#">child</a>
     @endsection
-</x-layouts.main-layout>
+</x-layout>

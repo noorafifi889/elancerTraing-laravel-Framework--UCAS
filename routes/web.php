@@ -1,17 +1,33 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PostController;
+use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\HomeController;  
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
+// روابط الصفحة الرئيسية
 Route::view('/', 'welcome');
+Route::get('/', HomeController::class)->name('home'); 
+
+// هيرووو! هذا السطر الواحد يعوضك عن الـ 8 أسطر المكررة ويمنحك الأسماء التي تريدها تلقائياً
+Route::resource('dashboard/posts', PostController::class)->names([
+    'index'   => 'posts.index',
+    'create'  => 'posts.create',
+    'store'   => 'posts.store',
+    'show'    => 'posts.show',
+    'edit'    => 'posts.edit',
+    'update'  => 'posts.update',
+    'destroy' => 'posts.destroy',
+]);
+
+// anther way to write routes without using resource
+// Route::post('/dashboard/posts', [PostController::class, 'store']);
+// Route::get('/dashboard/posts/{id}', [PostController::class, 'show']);
+// Route::get('/dashboard/posts/{id}/edit', [PostController::class, 'edit']);
+// Route::put('/dashboard/posts/{id}', [PostController::class, 'update']);
+// Route::delete('/dashboard/posts/{id}', [PostController::class, 'destroy']);
 
 
-Route::get('/',HomeController::class)->name('home'); //callable code 
 
 Route::get('/posts/{id}/{slug}',[PostController::class,'show'])
      ->where(
