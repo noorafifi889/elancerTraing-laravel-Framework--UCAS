@@ -5,7 +5,11 @@ namespace App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+
+use App\Models\Category;
 use Illuminate\Support\Str;
+
+ 
 
 class PostController extends Controller
 {
@@ -40,10 +44,12 @@ class PostController extends Controller
      */
     public function create()
     {
-        return view('dashboard.posts.create',
+        $categories = Category::all();
+return view('dashboard.posts.create', compact('categories'),
         $post= new Post() 
         );
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -79,8 +85,9 @@ class PostController extends Controller
     public function edit(string $id)
     {
         $post = Post::findOrFail($id);
-        return view('dashboard.posts.edit', ['post' => $post]);
-    }
+$categories = Category::all();
+    return view('dashboard.posts.edit', compact('post', 'categories')); 
+       }
 
     /**
      * Update the specified resource in storage.

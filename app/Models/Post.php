@@ -13,6 +13,10 @@ class Post extends Model
     protected $keyType = 'int';
     public $timestamps = true;
 
+
+    public function category() {
+    return $table->belongsTo(Category::class);
+}
     protected $fillable = [
         "id",
         'user_id',
