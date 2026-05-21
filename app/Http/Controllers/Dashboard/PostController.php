@@ -6,16 +6,33 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
 use Illuminate\Support\Str;
+
 class PostController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-    $post= Post::all();
+    public function index(Request $request) 
+    {  
+        $status = $request->query('status', 'published');
 
-    return  view('dashboard.posts.index', compact('post'));
+        $status_options = array_map(function($option) {
+            return [
+                'key'   => $option,
+                'name'  => ucfirst($option),
+                'count' => Post::where('status', $option)->count() 
+            ];
+        }, ['published', 'draft', 'archived']);
+
+        $posts = Post::where('status', $status)
+                     ->latest() 
+                     ->get(); 
+
+        return view('dashboard.posts.index', [
+            'posts'          => $posts,
+            'current_status' => $status, // 👈 فككت التعليق عنها لأن الـ Blade يحتاجها للتحديد الأزرق!
+            'status_options' => $status_options
+        ]);
     }
 
     /**
@@ -23,7 +40,9 @@ class PostController extends Controller
      */
     public function create()
     {
-     return view('dashboard.posts.create');
+        return view('dashboard.posts.create',
+        $post= new Post() 
+        );
     }
 
     /**
@@ -31,15 +50,15 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-     $post = new Post;
-     $request->merge([
-        'user_id' => 1,
-        'slug' => Str::slug($request->title), 
-        
+        $request->merge([
+            'user_id' => 1,
+            'slug' => Str::slug($request->title), 
+            'status' => 'published',
         ]);
-     $post =Post::create($request->all());
-    //PRG =>  Post Redirect Get
-    return redirect()->to('/dashboard/posts');
+
+        Post::create($request->all());
+
+        return redirect()->to('/dashboard/posts');
     }
 
     /**
@@ -47,11 +66,11 @@ class PostController extends Controller
      */
     public function show(string $id)
     {
-        $post= Post::find($id);
-        if($post){
+        $post = Post::find($id);
+        if (!$post) { // 👈 تم تصحيح الشرط المقلوب ليعمل بشكل سليم
             abort(404);
         }
-        return view('dashboard.posts.show', ['post'=>$post]);
+        return view('dashboard.posts.show', ['post' => $post]);
     }
 
     /**
@@ -59,11 +78,8 @@ class PostController extends Controller
      */
     public function edit(string $id)
     {
-        $post= Post::findOrFail($id);
-        if($post){
-            abort(404);
-        }
-        return view('dashboard.posts.edit', ['post'=>$post]);
+        $post = Post::findOrFail($id);
+        return view('dashboard.posts.edit', ['post' => $post]);
     }
 
     /**
@@ -71,11 +87,9 @@ class PostController extends Controller
      */
     public function update(Request $request, string $id)
     {
-    $post = Post::findOrFail($id);
-// $post->title =$request->title; 
-// $post->save();
-$post->update($request->all());
-return redirect()->to('/dashboard/posts');
+        $post = Post::findOrFail($id);
+        $post->update($request->all());
+        return redirect()->to('/dashboard/posts');
     }
 
     /**
@@ -85,7 +99,7 @@ return redirect()->to('/dashboard/posts');
     {
         $post = Post::findOrFail($id);
         $post->delete();
-        Post::destroy($id); 
+        
         return redirect()->to('/dashboard/posts');
     }
-}
+} // 🟢 نهاية الكلاس هنا بشكل صحيح

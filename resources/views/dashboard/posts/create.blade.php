@@ -1,15 +1,29 @@
 <x-layout title="Create Post">
-<form action="{{ route('posts.store') }}" method="POST">
+<form action="{{ $action ??  route('posts.store') }}" method="POST">
+    @csrf
+    {{-- <input type="hidden" name="_method" value="put"> //method spoofing for updatehod  --}}
+    @method($method ?? 'POST')
+
             <main class="pt-24 pb-32 flex flex-col md:flex-row max-w-container-max mx-auto px-gutter gap-12">
             <!-- Editor Canvas -->
             <div class="flex-1 max-w-article-max mx-auto w-full distraction-free-focus">
                 <div class="editor-container">
                     <!-- Title Field -->
-                    <textarea
-                        name="title"
-                        class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg resize-none placeholder:text-surface-variant text-on-surface mb-8 overflow-hidden"
-                        oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"' placeholder="Enter your title..."
-                        rows="1"></textarea>
+<input 
+    type="text"
+    name="title"
+    value="{{ $post->title ?? '' }}" 
+    class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg placeholder:text-surface-variant text-on-surface mb-8" 
+    placeholder="Enter your title..." 
+/>
+
+<input 
+    type="text"
+    name="content"
+    value="{{ $post->content ?? '' }}" 
+    class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg placeholder:text-surface-variant text-on-surface leading-relaxed"
+    placeholder="Type your story..." 
+/>
                     <!-- Floating Toolbar (Contextual) -->
                     {{-- <div class="sticky top-20 z-40 flex justify-center mb-12">
                         <div
@@ -50,11 +64,13 @@
                             leaving only the words. We prioritize clarity above all else, ensuring that every sentence
                             has room to breathe and every idea has the weight it deserves.</p>
                     </div> --}}
-                    <input type='text'
-                    name="content"
+                    {{-- <input type='text'
+                    {{-- value ="{{ $post->contant }}" --}}
+                    {{-- name="content"
                         class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg resize-none placeholder:text-surface-variant text-on-surface leading-relaxed"
                       placeholder="Type your story..."
-                      />
+                      /> --}} 
+
                       <button type="submit" class="mt-6 bg-primary-container text-on-primary px-6 py-2 rounded-lg font-ui-button text-ui-button hover:opacity-90 active:scale-95 transition-all">
                         Publish
                     </button>

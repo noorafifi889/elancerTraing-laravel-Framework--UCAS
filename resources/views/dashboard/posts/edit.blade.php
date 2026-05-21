@@ -1,3 +1,5 @@
-<div>
-    <!-- Waste no more time arguing what a good man should be, be one. - Marcus Aurelius -->
-</div>
+@include('dashboard.posts.create',[
+'posts' =>$post,
+'action'=>route('posts.update', $post->id),
+'method'=>'PUT'
+])
