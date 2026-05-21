@@ -4,7 +4,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\HomeController;  
-
+use App\Http\Controllers\CategoryController;
 // روابط الصفحة الرئيسية
 Route::view('/', 'welcome');
 Route::get('/', HomeController::class)->name('home'); 
@@ -54,6 +54,8 @@ $post=App\Models\Post::create(
 });
 ; //callable code 
 
+
+
 Route::get('/posts', function(){
     $posts = \App\Models\Post::create([
       'user_id'=>1,
@@ -67,6 +69,18 @@ Route::get('/posts', function(){
 
 
     ]);
+
+
+Route::prefix('dashboard')->group(function () {
+    
+    // 1. رواتس إدارة البوستات (Resource لجميع العمليات: index, create, store, edit, update, destroy)
+    Route::resource('posts', PostController::class);
+
+    // 2. رواتس إدارة الكاتيجوري (Resource الكامل لعمليات الـ CRUD)
+    Route::resource('categories', CategoryController::class);
+    
+});
+
     dd($posts);
    //  \App\Models\Post::query()
    //  ->where('status','=', 'published')

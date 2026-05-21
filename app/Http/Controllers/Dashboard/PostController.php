@@ -18,27 +18,29 @@ class PostController extends Controller
      */
     public function index(Request $request) 
     {  
+        // 1. استقبال الـ status من الـ Query String (الرابط)، والافتراضي هو published
         $status = $request->query('status', 'published');
 
+        // 2. بناء مصفوفة الخيارات (Tabs) لفلترة الحالات مع حساب العدد من الداتابيز
         $status_options = array_map(function($option) {
             return [
                 'key'   => $option,
-                'name'  => ucfirst($option),
-                'count' => Post::where('status', $option)->count() 
+'name'  => \Illuminate\Support\Str::ucfirst($option),
+                'count' => Post::where('status', $option)->count()
             ];
         }, ['published', 'draft', 'archived']);
 
-        $posts = Post::where('status', $status)
-                     ->latest() 
+        $posts = Post::with('category')
+                     ->where('status', $status)
+                     ->latest()
                      ->get(); 
 
         return view('dashboard.posts.index', [
             'posts'          => $posts,
-            'current_status' => $status, // 👈 فككت التعليق عنها لأن الـ Blade يحتاجها للتحديد الأزرق!
+            'current_status' => $status,
             'status_options' => $status_options
         ]);
     }
-
     /**
      * Show the form for creating a new resource.
      */

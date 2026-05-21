@@ -15,7 +15,7 @@ class Post extends Model
 
 
     public function category() {
-    return $table->belongsTo(Category::class);
+    return $this->belongsTo(Category::class);
 }
     protected $fillable = [
         "id",
