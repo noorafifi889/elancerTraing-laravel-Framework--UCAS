@@ -43,19 +43,20 @@ class PostController extends Controller
     }
     /**
      * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $categories = Category::all();
-return view('dashboard.posts.create', compact('categories'),
-        $post= new Post() 
-        );
-    }
+*/
+public function create()
+{
+    // 1. جلب كل التصنيفات
+    $categories = Category::all();
+    
+    // 2. إنشاء كائن فارغ من الـ Post (عشان لو الفورم بتستخدمه للكارنيه أو الـ Old data)
+    $post = new Post();
+
+    // 3. تمرير المتغيرين معاً داخل دالة compact واحدة ونظيفة
+    return view('dashboard.posts.create', compact('categories', 'post'));
+}
 
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         $request->merge([
