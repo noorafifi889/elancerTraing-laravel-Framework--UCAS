@@ -28,7 +28,7 @@
                             type="text" 
                             id="name"
                             name="name" 
-                            value="{{ old('name') }}" 
+value="{{ old('name', $category->name ?? '') }}"
                             placeholder="e.g., Technology, Lifestyle, Business" 
                             class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100/50 transition-all outline-none font-medium @error('name') border-red-500 bg-red-50/10 @enderror"
                             required

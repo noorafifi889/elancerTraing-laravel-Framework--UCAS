@@ -41,7 +41,11 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category created successfully!');
     }
-
+public function edit(Category $category)
+    {
+        // استدعاء ملف الـ edit وتمرير الكاتيجوري المراد تعديله له
+        return view('dashboard.categories.edit', compact('category'));
+    }
     public function update(Request $request, Category $category)
     {
         $request->validate([
