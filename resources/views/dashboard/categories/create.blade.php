@@ -52,7 +52,7 @@ value="{{ old('name', $category->name ?? '') }}"
                         rows="5" 
                         placeholder="Provide a brief summary or editorial intent for this category to assist with SEO..." 
                         class="w-full px-4 py-3 bg-gray-50/50 border border-gray-200 rounded-lg text-gray-900 placeholder-gray-400 focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-100/50 transition-all outline-none text-sm leading-relaxed resize-none"
-                    >{{ old('description') }}</textarea>
+              >{{ old('description', $category->description ?? '') }}</textarea>
                 </div>
 
                 <div class="flex items-center justify-end gap-3 pt-6 border-t border-gray-100 mt-8">
