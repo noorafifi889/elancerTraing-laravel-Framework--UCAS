@@ -18,6 +18,13 @@ class CategoryController extends Controller
         return view('dashboard.categories.index', compact('categories', 'topCategory'));
     }
 
+    public function create()
+    {
+        // جلب الأقسام الرئيسية فقط في حال حبتي تعملي Dropdown للـ Parent Category مستقبلاً
+        $parentCategories = Category::all(); 
+        
+        return view('dashboard.categories.create', compact('parentCategories'));
+    }
     public function store(Request $request)
     {
         $request->validate([

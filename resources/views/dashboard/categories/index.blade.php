@@ -9,11 +9,11 @@
                     <p class="font-body-md text-on-surface-variant">Organize your content structure, monitor performance
                         metrics, and refine your editorial taxonomy for maximum audience engagement.</p>
                 </div>
-                <button
+                <a  href="{{ route('categories.create') }}"
                     class="bg-primary text-on-primary px-6 py-3 rounded-lg font-ui-button text-ui-button shadow-sm hover:opacity-90 active:scale-95 transition-all flex items-center gap-2 whitespace-nowrap">
                     <span class="material-symbols-outlined">add</span>
                     Create Category
-                </button>
+            </a>
             </header>
             <!-- Search and Layout Toggle -->
             <div class="flex flex-col md:flex-row gap-4 items-center justify-between mb-8">
