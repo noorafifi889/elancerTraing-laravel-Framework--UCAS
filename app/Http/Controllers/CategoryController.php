@@ -7,16 +7,20 @@ use Illuminate\Support\Str;
 
 class CategoryController extends Controller
 {
-    public function index()
-    {
-        // مع جلب عدد البوستات المرتبطة بكل قسم (عشان تظهر في الـ Table)
-        $categories = Category::withCount('posts')->get();
-        
-        // جلب الكاتيجوري الأعلى أداءً (كمثال مبسط بناءً على عدد البوستات أو مجموع المشاهدات)
-        $topCategory = Category::withCount('posts')->orderBy('posts_count', 'desc')->first();
+public function index()
+{
+    // جلب الأقسام مع عدد البوستات + مجموع حقل الـ views من جدول البوستات
+    $categories = Category::withCount('posts')
+        ->withSum('posts as total_views', 'views') 
+        ->get();
+    
+    $topCategory = Category::withCount('posts')
+        ->withSum('posts as total_views', 'views')
+        ->orderBy('posts_count', 'desc')
+        ->first();
 
-        return view('dashboard.categories.index', compact('categories', 'topCategory'));
-    }
+    return view('dashboard.categories.index', compact('categories', 'topCategory'));
+}
 
     public function create()
     {
