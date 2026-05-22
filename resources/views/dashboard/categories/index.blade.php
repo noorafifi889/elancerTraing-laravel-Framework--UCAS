@@ -236,7 +236,7 @@
                 {{ $category->posts_count ?? 0 }}
             </td>
 
-            <td class="px-6 py-4 font-ui-label text-ui-label">5.2k</td>
+            <td class="px-6 py-4 font-ui-label text-ui-label">   {{ $category->posts_count ?? 0 }} </td>
 
             <td class="px-6 py-4 text-right">
                 <div class="flex justify-end gap-2">
@@ -244,13 +244,13 @@
                         <span class="material-symbols-outlined">edit</span>
                     </a>
                     
-                    <form action="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category?');" class="inline">
+                    <a href="{{ route('categories.destroy', $category->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category?');" class="inline">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="text-on-surface-variant hover:text-error transition-colors">
+                        <button type="submit" class="text-on-surface-variant hover:text-error transition-colors bg-transparent border-none cursor-pointer">
                             <span class="material-symbols-outlined">delete</span>
                         </button>
-                    </form>
+                    </a>
                 </div>
             </td>
         </tr>

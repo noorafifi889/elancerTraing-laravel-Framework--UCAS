@@ -15,9 +15,9 @@
                 <p class="text-sm text-gray-500 mt-1">Add a new core segment to refine your content structure.</p>
             </div>
 
-            <form action="{{ route('categories.store') }}" method="POST" class="p-6 sm:p-8 space-y-6">
+            <form action="{{ $action ?? route('categories.store') }}" method="POST" class="p-6 sm:p-8 space-y-6">
                 @csrf
-                
+                  @method($method ?? 'POST')
                 <div class="space-y-2">
                     <div class="flex justify-between items-center">
                         <label for="name" class="block text-xs font-semibold text-gray-700 uppercase tracking-wider">Category Name <span class="text-red-500">*</span></label>
