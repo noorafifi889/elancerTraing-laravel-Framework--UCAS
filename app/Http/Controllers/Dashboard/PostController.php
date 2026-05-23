@@ -59,10 +59,23 @@ public function create()
 
     public function store(Request $request)
     {
+if ($request->hasFile('cover')) {
+    $image = $request->file('cover'); // الحصول على الملف المرفوع
+
+     $cover_image_path = $image->store('covers',['disk'=>'public']); // تخزين الصورة في مجلد 'covers' داخل التخزين العام (public
+    
+    
+//     $image->getClientOriginalName();
+//  $image->getClientOriginalName();
+//  $image->getSize();
+// $image->getMimeType();
+}
+
         $request->merge([
             'user_id' => 1,
             'slug' => Str::slug($request->title), 
             'status' => 'published',
+            'cover_image' => $cover_image_path ?? null, // إضافة مسار الصورة إلى البيانات المرسلة للإنشاء
         ]);
 
         Post::create($request->all());

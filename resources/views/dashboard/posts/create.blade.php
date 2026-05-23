@@ -1,5 +1,5 @@
 <x-layout title="Create Post">
-<form action="{{ $action ??  route('posts.store') }}" method="POST">
+<form action="{{ $action ??  route('posts.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     {{-- <input type="hidden" name="_method" value="put"> //method spoofing for updatehod  --}}
     @method($method ?? 'POST')
@@ -90,6 +90,7 @@
                                 class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
                             <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
                         </div>
+                        <input type='file' name="cover_image" accept="image/png, image/jpeg ,image/jpg" />
                     </section>
                     <!-- Tags -->
                     <section>
