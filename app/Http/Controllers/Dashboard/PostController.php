@@ -90,7 +90,8 @@ $clean =$request->validated();
         'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') // استخدام الـ Action الجديد لرفع الملفات
     ]));
 
-    return redirect()->to('/dashboard/posts');
+    return redirect()->to('/dashboard/posts')
+    ->with('success', 'Post created successfully!');
 }
     /**
      * Display the specified resource.
@@ -140,7 +141,7 @@ $categories = Category::all();
     }
 
     // 6. إعادة التوجيه إلى صفحة المقالات
-    return redirect()->to('/dashboard/posts');
+    return redirect()->to('/dashboard/posts')->with('success', 'Post updated successfully!');
 }
     /**
      * Remove the specified resource from storage.
@@ -154,6 +155,6 @@ if($post->cover_image) {
     Storage::disk('public')->delete($post->cover_image);
 }
 
-        return redirect()->to('/dashboard/posts');
+        return redirect()->to('/dashboard/posts')->with('success', 'Post deleted successfully!');
     }
 } // 🟢 نهاية الكلاس هنا بشكل صحيح

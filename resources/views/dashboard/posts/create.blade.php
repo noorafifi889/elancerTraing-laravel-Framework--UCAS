@@ -22,18 +22,23 @@
 <input 
     type="text"
     name="title"
-    value="{{ $post->title ?? '' }}" 
+    value="{{ old('title', $post->title ?? '') }}" 
     class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg placeholder:text-surface-variant text-on-surface mb-8" 
     placeholder="Enter your title..." 
 />
-
+@error('title')
+    <p class="text-sm text-red-600">{{ $message }}</p>
+@enderror
 <input 
     type="text"
     name="content"
-    value="{{ $post->content ?? '' }}" 
+    value="{{ old('content', $post->content ?? '') }}" 
     class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg placeholder:text-surface-variant text-on-surface leading-relaxed"
     placeholder="Type your story..." 
 />
+@error('content')
+    <p class="text-sm text-red-600">{{ $message }}</p>
+@enderror
                     <!-- Floating Toolbar (Contextual) -->
                     {{-- <div class="sticky top-20 z-40 flex justify-center mb-12">
                         <div
@@ -112,6 +117,14 @@
                         @endif
                            </div>
                         <input type='file' name="cover" accept="image/png, image/jpeg ,image/jpg" />
+                   @error('cover')
+
+                   @foreach ($errors->get('cover') as $error )
+                       
+                   <p class="text-sm text-red-600">{{ $error }}</p>
+                   @endforeach
+@enderror
+                   
                     </section>
                     <!-- Tags -->
                     <section>

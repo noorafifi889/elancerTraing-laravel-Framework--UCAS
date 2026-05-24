@@ -38,11 +38,13 @@ class PostRequest extends FormRequest
     }
     public function messages():array
 {
-return [
-'required' =>':attribute is required',
-'title.required' => ':attribute is mandatory',
+return[];
 
-];
+// return [
+// 'required' =>':attribute is required',
+// 'title.required' => ':attribute is mandatory',
+
+// ];
 }
 #[Override]
 public function attributes():array
