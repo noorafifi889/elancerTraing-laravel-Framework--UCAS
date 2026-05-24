@@ -128,6 +128,10 @@ if($prev_cover_image !== $post->cover_image){
         $post = Post::findOrFail($id);
         $post->delete();
         
+if($post->cover_image) {
+    Storage::disk('public')->delete($post->cover_image);
+}
+
         return redirect()->to('/dashboard/posts');
     }
 } // 🟢 نهاية الكلاس هنا بشكل صحيح
