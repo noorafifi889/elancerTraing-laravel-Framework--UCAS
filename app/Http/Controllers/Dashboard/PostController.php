@@ -1,10 +1,11 @@
 <?php
 
 namespace App\Http\Controllers\Dashboard;
-
+  
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+    use App\Actions\FileUpload;
 
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
@@ -57,22 +58,35 @@ public function create()
 }
 
 
-public function store(Request $request)
+public function store(Request $request , FileUpload $fileUpload)
 {
     // 1. التحقق من رفع الصورة وتخزينها
-    $cover_image_path = null;
-    if ($request->hasFile('cover')) {
-        $image = $request->file('cover');
-        $cover_image_path = $image->storePublicly('covers', 
-        ['disk' => 'public']);
-    }
+    // $cover_image_path = null;
+    // if ($request->hasFile('cover')) {
+    //     $image = $request->file('cover');
+    //     $cover_image_path = $image->storePublicly('covers', 
+    //     ['disk' => 'public']);
+    // }
+
+$clean =$request->validate([
+    'title' =>'required|string|min:3|max:255',
+    'content' => 'required|string|max:99999',
+    'cover' =>[
+    'nullable',    
+    'image' ,
+    'mimes:png,jpg' ,
+     'mimetypes:image/png,image/jpeg' ,
+      'dimensions:min_width=600,min_height=400,max_width=2000,max_height=2000',
+      'max:1024'
+      ]
+]);
 
     // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
-    Post::create(array_merge($request->all(), [
+    Post::create(array_merge($clean, [
         'user_id'     =>  1, // يفضل استخدام auth()->id() وتجعل 1 كاحتياطي
         'slug'        => Str::slug($request->title), 
         'status'      => 'published',
-        'cover_image' => $cover_image_path,
+        'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') // استخدام الـ Action الجديد لرفع الملفات
     ]));
 
     return redirect()->to('/dashboard/posts');
@@ -102,15 +116,18 @@ $categories = Category::all();
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id , FileUpload $fileUpload)
     {
 
         $post = Post::findOrFail($id);
- if($request->hasFile('cover')) {
-            $image = $request->file('cover');
-            $cover_image_path = $image->storePublicly('covers', ['disk' => 'public']);
-            $request->merge(['cover_image' => $cover_image_path]);
-        }   
+            $request->merge([
+                'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') ?? $post->cover_image
+            ]);
+//  if($request->hasFile('cover')) {
+//             $image = $request->file('cover');
+//             $cover_image_path = $image->storePublicly('covers', ['disk' => 'public']);
+//             $request->merge(['cover_image' => $cover_image_path]);
+//         }   
         $post->update($request->except(['_method','_token']));
 $previous=  $post->getPrevious();
 $prev_cover_image =$previous['cover_image'] ?? null;
