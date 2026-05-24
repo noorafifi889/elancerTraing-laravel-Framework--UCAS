@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
     use App\Actions\FileUpload;
-
+use App\Http\Requests\PostRequest;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -58,7 +58,7 @@ public function create()
 }
 
 
-public function store(Request $request , FileUpload $fileUpload)
+public function store(PostRequest $request , FileUpload $fileUpload)
 {
     // 1. التحقق من رفع الصورة وتخزينها
     // $cover_image_path = null;
@@ -68,20 +68,21 @@ public function store(Request $request , FileUpload $fileUpload)
     //     ['disk' => 'public']);
     // }
 
-$clean =$request->validate([
-    'title' =>'required|string|min:3|max:255',
-    'content' => 'required|string|max:99999',
-    'cover' =>[
-    'nullable',    
-    'image' ,
-    'mimes:png,jpg' ,
-     'mimetypes:image/png,image/jpeg' ,
-      'dimensions:min_width=600,min_height=400,max_width=2000,max_height=2000',
-      'max:1024'
-      ]
-]);
+// $clean =$request->validate([
+//     'title' =>'required|string|min:3|max:255',
+//     'content' => 'required|string|max:99999',
+//     'cover' =>[
+//     'nullable',    
+//     'image' ,
+//     'mimes:png,jpg' ,
+//      'mimetypes:image/png,image/jpeg' ,
+//       'dimensions:min_width=600,min_height=400,max_width=2000,max_height=2000',
+//       'max:1024'
+//       ]
+// ]);
 
-    // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
+$clean =$request->validated();
+      // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
     Post::create(array_merge($clean, [
         'user_id'     =>  1, // يفضل استخدام auth()->id() وتجعل 1 كاحتياطي
         'slug'        => Str::slug($request->title), 
@@ -116,27 +117,31 @@ $categories = Category::all();
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id , FileUpload $fileUpload)
-    {
+   public function update(PostRequest $request, FileUpload $fileUpload, string $id)
+{
+    // 1. جلب المقال أو إرجاع 404 إذا لم يكن موجوداً
+    $post = Post::findOrFail($id);
 
-        $post = Post::findOrFail($id);
-            $request->merge([
-                'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') ?? $post->cover_image
-            ]);
-//  if($request->hasFile('cover')) {
-//             $image = $request->file('cover');
-//             $cover_image_path = $image->storePublicly('covers', ['disk' => 'public']);
-//             $request->merge(['cover_image' => $cover_image_path]);
-//         }   
-        $post->update($request->except(['_method','_token']));
-$previous=  $post->getPrevious();
-$prev_cover_image =$previous['cover_image'] ?? null;
-if($prev_cover_image !== $post->cover_image){
-    Storage::disk('public')->delete($prev_cover_image);
-}
-        return redirect()->to('/dashboard/posts');
+    // 2. جلب البيانات المفحوصة والمضمونة فقط من الـ Form Request
+    $cleanData = $request->validated();
+
+    // 3. معالجة الصورة: إذا رُفعت صورة جديدة نأخذ مسارها، وإلا نحتفظ بالصورة القديمة
+    $cleanData['cover_image'] = $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') ?? $post->cover_image;
+
+    // 4. تحديث بيانات المقال في قاعدة البيانات بالبيانات النظيفة فقط
+    $post->update($cleanData);
+
+    // 5. منطق حذف الصورة القديمة من السيرفر في حال تم تغييرها
+    $previous = $post->getPrevious(); // تأكدي أن هذه الدالة مجهزة داخل الـ Model
+    $prev_cover_image = $previous['cover_image'] ?? null;
+
+    if ($prev_cover_image && $prev_cover_image !== $post->cover_image) {
+        Storage::disk('public')->delete($prev_cover_image);
     }
 
+    // 6. إعادة التوجيه إلى صفحة المقالات
+    return redirect()->to('/dashboard/posts');
+}
     /**
      * Remove the specified resource from storage.
      */

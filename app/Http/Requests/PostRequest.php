@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Override;
 
 class PostRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class PostRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -35,4 +36,24 @@ class PostRequest extends FormRequest
       ]
         ];
     }
+    public function messages():array
+{
+return [
+'required' =>':attribute is required',
+'title.required' => ':attribute is mandatory',
+
+];
 }
+#[Override]
+public function attributes():array
+{
+    return [
+        'title' => 'Post Title',
+        'content' => 'Post Content',
+        'cover' => 'Cover Image'
+    ];
+}
+
+}
+
+
