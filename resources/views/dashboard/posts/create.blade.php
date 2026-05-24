@@ -90,7 +90,7 @@
                                 class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
                             <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
                         </div>
-                        <input type='file' name="cover_image" accept="image/png, image/jpeg ,image/jpg" />
+                        <input type='file' name="cover" accept="image/png, image/jpeg ,image/jpg" />
                     </section>
                     <!-- Tags -->
                     <section>

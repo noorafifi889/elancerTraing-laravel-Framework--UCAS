@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Post;
 
 use App\Models\Category;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-
- 
+use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
 
 class PostController extends Controller
 {
@@ -57,32 +57,26 @@ public function create()
 }
 
 
-    public function store(Request $request)
-    {
-if ($request->hasFile('cover')) {
-    $image = $request->file('cover'); // الحصول على الملف المرفوع
-
-     $cover_image_path = $image->store('covers',['disk'=>'public']); // تخزين الصورة في مجلد 'covers' داخل التخزين العام (public
-    
-    
-//     $image->getClientOriginalName();
-//  $image->getClientOriginalName();
-//  $image->getSize();
-// $image->getMimeType();
-}
-
-        $request->merge([
-            'user_id' => 1,
-            'slug' => Str::slug($request->title), 
-            'status' => 'published',
-            'cover_image' => $cover_image_path ?? null, // إضافة مسار الصورة إلى البيانات المرسلة للإنشاء
-        ]);
-
-        Post::create($request->all());
-
-        return redirect()->to('/dashboard/posts');
+public function store(Request $request)
+{
+    // 1. التحقق من رفع الصورة وتخزينها
+    $cover_image_path = null;
+    if ($request->hasFile('cover')) {
+        $image = $request->file('cover');
+        $cover_image_path = $image->storePublicly('covers', 
+        ['disk' => 'public']);
     }
 
+    // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
+    Post::create(array_merge($request->all(), [
+        'user_id'     =>  1, // يفضل استخدام auth()->id() وتجعل 1 كاحتياطي
+        'slug'        => Str::slug($request->title), 
+        'status'      => 'published',
+        'cover_image' => $cover_image_path,
+    ]));
+
+    return redirect()->to('/dashboard/posts');
+}
     /**
      * Display the specified resource.
      */
@@ -110,8 +104,19 @@ $categories = Category::all();
      */
     public function update(Request $request, string $id)
     {
+
         $post = Post::findOrFail($id);
-        $post->update($request->all());
+ if($request->hasFile('cover')) {
+            $image = $request->file('cover');
+            $cover_image_path = $image->storePublicly('covers', ['disk' => 'public']);
+            $request->merge(['cover_image' => $cover_image_path]);
+        }   
+        $post->update($request->except(['_method','_token']));
+$previous=  $post->getPrevious();
+$prev_cover_image =$previous['cover_image'] ?? null;
+if($prev_cover_image !== $post->cover_image){
+    Storage::disk('public')->delete($prev_cover_image);
+}
         return redirect()->to('/dashboard/posts');
     }
 
