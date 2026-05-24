@@ -5,6 +5,9 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Override;
+use App\Rules\Restricted;
+
+
 
 class PostRequest extends FormRequest
 {
@@ -24,8 +27,13 @@ class PostRequest extends FormRequest
     public function rules(): array
     {
         return [
-    'title' =>'required|string|min:3|max:255',
-    'content' => 'required|string|max:99999',
+    'title' => ['required', 'string', 'min:3', 'max:255'],
+    'content' => ['required',
+     'string',
+      'max:99999',
+      new Restricted( ['god','hell'])
+      
+      ],
     'cover' =>[
     'nullable',    
     'image' ,
