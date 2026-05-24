@@ -8,6 +8,16 @@
             <!-- Editor Canvas -->
             <div class="flex-1 max-w-article-max mx-auto w-full distraction-free-focus">
                 <div class="editor-container">
+
+                @if($errors->any())
+                <div class='text-red-600 bg-red-50 border border-red-200 rounded-lg p-4 mb-6'>
+@foreach ($errors->all() as $message)
+    <p class='text-sm text-red-600'>{{ $message }}</p>
+@endforeach
+
+                </div>
+
+                @endif
                     <!-- Title Field -->
 <input 
     type="text"
@@ -84,12 +94,23 @@
                     <section>
                         <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
                             Image</h3>
+                            @if($post->cover_image)
                         <div
-                            class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">
+                            class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group"
+                            style="background-image: url('{{ asset('storage/' . $post->cover_image) }}'); background-size: cover; background-position: center;"
+                            >
+                            @else
+                            <div class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">>
+
+
+                         
+
                             <span
                                 class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
                             <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
                         </div>
+                        @endif
+                           </div>
                         <input type='file' name="cover" accept="image/png, image/jpeg ,image/jpg" />
                     </section>
                     <!-- Tags -->
