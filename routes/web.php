@@ -5,6 +5,7 @@ use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\HomeController;  
 use App\Http\Controllers\CategoryController;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -15,6 +16,21 @@ use App\Http\Controllers\CategoryController;
 Route::view('/', 'welcome');
 Route::get('/', HomeController::class)->name('home'); 
 
+
+
+Route::group([
+    'as' => 'dashboard.',
+    'prefix' => 'dashboard',
+    'middleware' => ['auth:web'],
+], function () {
+    Route::resource('posts', PostController::class);
+});
+
+// راوتس إدارة التصنيفات
+Route::resource('categories', CategoryController::class);
+
+// راوتس المقالات
+Route::resource('posts', PostController::class);
 // 2. روابط الواجهة الأمامية للمقالات (الـ Blog الخارجي)
 Route::get('/posts/{id}/{slug}', [PostController::class, 'show'])
      ->where(['id' => '[0-9]+', 'slug' => '[a-zA-Z0-9\-]+']);
