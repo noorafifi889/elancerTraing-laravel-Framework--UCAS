@@ -13,21 +13,19 @@ use App\Http\Controllers\CategoryController;
 */
 
 // 1. روابط الصفحة الرئيسية للموقع
-Route::view('/', 'welcome');
-Route::get('/', HomeController::class)->name('home'); 
+Route::get('/', HomeController::class)->name('home');
 
+// الواجهة الأمامية
+Route::resource('categories', CategoryController::class)->only(['index', 'show']);
 
-
-Route::group([
-    'as' => 'dashboard.',
-    'prefix' => 'dashboard',
-    'middleware' => ['auth:web'],
-], function () {
-    Route::resource('posts', PostController::class);
-});
-
-// راوتس إدارة التصنيفات
-Route::resource('categories', CategoryController::class);
+// Dashboard محمي
+Route::middleware(['auth:web'])
+    ->prefix('dashboard')
+    ->name('dashboard.')
+    ->group(function () {
+        Route::resource('posts', PostController::class);
+        Route::resource('categories', CategoryController::class);
+    });
 
 // راوتس المقالات
 Route::resource('posts', PostController::class);

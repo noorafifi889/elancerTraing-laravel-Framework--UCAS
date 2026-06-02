@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Post;
     use App\Actions\FileUpload;
 use App\Http\Requests\PostRequest;
+    
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -83,12 +84,12 @@ public function store(PostRequest $request , FileUpload $fileUpload)
 
 $clean =$request->validated();
       // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
-    Post::create(array_merge($clean, [
-        'user_id'     =>  1, // يفضل استخدام auth()->id() وتجعل 1 كاحتياطي
-        'slug'        => Str::slug($request->title), 
-        'status'      => 'published',
-        'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') // استخدام الـ Action الجديد لرفع الملفات
-    ]));
+Post::create(array_merge($clean, [
+    'user_id'     => auth()->id(),  // 👈 هون فقط
+    'slug'        => Str::slug($request->title),
+    'status'      => 'published',
+    'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public')
+]));
 
     return redirect()->to('/dashboard/posts')
     ->with('success', 'Post created successfully!');

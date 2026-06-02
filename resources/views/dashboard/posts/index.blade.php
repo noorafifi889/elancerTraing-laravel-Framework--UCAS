@@ -14,11 +14,11 @@
                     <p class="text-on-surface-variant max-w-lg font-ui-label text-ui-label">Manage your intellectual
                         output, track performance, and schedule your upcoming editorial pieces.</p>
                 </div>
-                <button
+                <a href="{{ route('posts.create') }}"
                     class="bg-primary-container text-on-primary px-6 py-3 rounded-lg font-ui-button text-ui-button flex items-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-sm">
                     <span class="material-symbols-outlined text-[20px]" data-icon="edit_square">edit_square</span>
                     Create Post
-                </button>
+                </a>
             </div>
             <!-- Dashboard Layout Grid -->
             <div class="grid grid-cols-12 gap-8">
