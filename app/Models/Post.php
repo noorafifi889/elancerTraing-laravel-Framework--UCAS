@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Post extends Model
 {
@@ -14,8 +15,13 @@ class Post extends Model
     public $timestamps = true;
 
 
-    public function category() {
-    return $this->belongsTo(Category::class);
+    public function category(): BelongsTo{
+    return $this->belongsTo(Category::class ,"category_id","id")
+    ->withDefault([
+        'name' => 'Uncategorized',
+        'slug' => 'uncategorized',
+    ])
+    ;
 }
     protected $fillable = [
         "id",
@@ -29,4 +35,10 @@ class Post extends Model
         'status',
         'views'
     ];
+
+    public function user() :BelongsTo{
+        return $this->belongsTo(User::class);
+    }
+
+ 
 }
