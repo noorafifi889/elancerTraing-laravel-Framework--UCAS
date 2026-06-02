@@ -23,4 +23,7 @@ public function show(int $id, string $slug)
         'post' => $post
     ]);
 }
+
+
+
 }

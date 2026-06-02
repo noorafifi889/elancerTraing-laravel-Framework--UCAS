@@ -9,6 +9,7 @@ use App\Models\Post;
 use App\Http\Requests\PostRequest;
     
 use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
@@ -32,10 +33,17 @@ class PostController extends Controller
             ];
         }, ['published', 'draft', 'archived']);
 
-        $posts = Post::with('category')
-                     ->where('status', $status)
-                     ->latest()
-                     ->get(); 
+     $user= Auth::user();
+      $posts = $user->posts()
+      ->where('status', $status)
+      ->latest()
+      ->get();
+
+
+        // $posts = Post::with('category')
+        //              ->where('status', $status)
+        //              ->latest()
+        //              ->get(); 
 
         return view('dashboard.posts.index', [
             'posts'          => $posts,
