@@ -120,7 +120,7 @@
                 <div class="flex-grow grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                     <!-- تفاصيل المقال -->
                     <div class="md:col-span-6">
-                        <span class="text-metadata font-metadata text-primary mb-1 block">Editorial • 8 min read</span>
+                        <span class="text-metadata font-metadata text-primary mb-1 block">{{ $post->category?->name }} • 8 min read</span>
                         <h3 class="font-headline-md text-[20px] leading-snug group-hover:text-primary transition-colors">
                             {{ $post->title }}
                         </h3>
