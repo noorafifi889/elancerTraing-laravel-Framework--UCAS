@@ -10,6 +10,7 @@ use App\Http\Requests\PostRequest;
     
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
@@ -36,6 +37,12 @@ class PostController extends Controller
      $user= Auth::user();
       $posts = $user->posts()
       ->with('category','user')
+      ->select(['id', 'user_id', 'category_id', 'title','views', 'slug', 'status', 'created_at'])
+      
+//       ->addSelect(
+//     DB::raw('(select count(*) from comments where comments.post_id = posts.id) as comments_count')
+// )
+->withCount('comments') // 👈 هذا السطر يضيف عمود comments_count تلقائياً بناءً على العلاقة
       ->where('status', $status)
       ->orderBy('created_at' ,"desc")
       ->get();
