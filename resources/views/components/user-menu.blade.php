@@ -1,12 +1,26 @@
-<div>
-                   <a href="{{ route('posts.create') }}"
-                        class="ml-2 bg-primary-container text-on-primary px-6 py-2 rounded-lg font-ui-button text-ui-button hover:opacity-90 active:scale-95 transition-all">
-                        Create Post
-</a>
-                    <div class="ml-2 w-8 h-8">
-                         <div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant cursor-pointer">
-        <img alt="User Avatar" class="w-full h-full object-cover"
-            src="https://ui-avatars.com/api/?name={{ $user?->name }}" />
+@auth
+    <div class="flex items-center">
+        <a href="{{ route('posts.create') }}"
+           class="ml-2 bg-primary-container text-on-primary px-6 py-2 rounded-lg hover:opacity-90 transition-all">
+            Create Post
+        </a>
+
+        <img class="w-8 h-8 rounded-full border ml-2"
+             src="https://ui-avatars.com/api/?name={{ auth()->user()->name }}" />
+
+        <span class="ml-2 text-sm">{{ auth()->user()->name }}</span>
+
+        <form method="POST" action="{{ route('logout') }}" class="ml-2">
+            @csrf
+            <button type="submit" class="text-sm text-red-600 hover:underline">
+                Logout
+            </button>
+        </form>
     </div>
-                    </div>
-                </div>
+
+@else
+    <a href="{{ route('login') }}"
+       class="ml-2 bg-primary-container text-on-primary px-6 py-2 rounded-lg hover:opacity-90 transition-all">
+        Login
+    </a>
+@endauth
