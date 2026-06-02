@@ -29,14 +29,11 @@ Route::middleware(['auth:web'])
 
 // راوتس المقالات
 Route::resource('posts', PostController::class);
-// 2. روابط الواجهة الأمامية للمقالات (الـ Blog الخارجي)
 Route::get('/posts/{id}/{slug}', [PostController::class, 'show'])
      ->where(['id' => '[0-9]+', 'slug' => '[a-zA-Z0-9\-]+']);
 
-// 3. مجموعة لوحة التحكم (Dashboard) - لتنظيم الروابط ومنع تكرار كلمة dashboard
 Route::prefix('dashboard')->group(function () {
     
-    // رواتس إدارة البوستات (مع الأسماء المخصصة للداشبورد تلقائياً)
     Route::resource('posts', PostController::class)->names([
         'index'   => 'posts.index',
         'create'  => 'posts.create',

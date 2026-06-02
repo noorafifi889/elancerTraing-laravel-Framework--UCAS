@@ -35,8 +35,9 @@ class PostController extends Controller
 
      $user= Auth::user();
       $posts = $user->posts()
+      ->with('category','user')
       ->where('status', $status)
-      ->latest()
+      ->orderBy('created_at' ,"desc")
       ->get();
 
 
