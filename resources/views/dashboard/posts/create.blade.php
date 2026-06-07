@@ -1,142 +1,174 @@
-<x-layout title="Create Post">
-    <form action="{{ $action ?? route('posts.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        {{-- <input type="hidden" name="_method" value="put"> //method spoofing for updatehod  --}}
-        @method($method ?? 'POST')
+<x-layout>
+<x-slot:head-scripts>
+<script src="https://cdn.tiny.cloud/1/jmf3gdmo3pagqgzpwn43fqeb8mtfuke1ryv2zoqkdsc4iue5/tinymce/8/tinymce.min.js" referrerpolicy="origin" crossorigin="anonymous"></script>
 
-        <main class="pt-24 pb-32 flex flex-col md:flex-row max-w-container-max mx-auto px-gutter gap-12">
-            <!-- Editor Canvas -->
-            <div class="flex-1 max-w-article-max mx-auto w-full distraction-free-focus">
-                <div class="editor-container">
-
-                    @if ($errors->any())
-                        <div class='text-red-600 bg-red-50 border border-red-200 rounded-lg p-4 mb-6'>
-                            @foreach ($errors->all() as $message)
-                                <p class='text-sm text-red-600'>{{ $message }}</p>
-                            @endforeach
-
-                        </div>
-
-                    @endif
-                    <!-- Title Field -->
-                    <input type="text" name="title" value="{{ old('title', $post->title ?? '') }}"
-                        class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg placeholder:text-surface-variant text-on-surface mb-8"
-                        placeholder="Enter your title..." />
-                    @error('title')
-                        <p class="text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    <input type="text" name="content" value="{{ old('content', $post->content ?? '') }}"
-                        class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg placeholder:text-surface-variant text-on-surface leading-relaxed"
-                        placeholder="Type your story..." />
-                    @error('content')
-                        <p class="text-sm text-red-600">{{ $message }}</p>
-                    @enderror
-                    <!-- Floating Toolbar (Contextual) -->
-                    {{-- <div class="sticky top-20 z-40 flex justify-center mb-12">
-                        <div
-                            class="bg-inverse-surface text-inverse-on-surface px-2 py-1.5 rounded-xl shadow-xl flex items-center gap-1 border border-outline/20">
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Bold">
-                                <span class="material-symbols-outlined">format_bold</span>
-                            </button>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Italic">
-                                <span class="material-symbols-outlined">format_italic</span>
-                            </button>
-                            <div class="w-px h-6 bg-white/10 mx-1"></div>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Heading 1">
-                                <span class="material-symbols-outlined">format_h1</span>
-                            </button>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Heading 2">
-                                <span class="material-symbols-outlined">format_h2</span>
-                            </button>
-                            <div class="w-px h-6 bg-white/10 mx-1"></div>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Quote">
-                                <span class="material-symbols-outlined">format_quote</span>
-                            </button>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Link">
-                                <span class="material-symbols-outlined">link</span>
-                            </button>
-                            <div class="w-px h-6 bg-white/10 mx-1"></div>
-                            <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Image">
-                                <span class="material-symbols-outlined">image</span>
-                            </button>
-                        </div>
-                    </div>
-                    <!-- Main Content Editor -->
-                    <div class="w-full min-h-[614px] bg-transparent border-none focus:outline-none font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
-                        contenteditable="true" data-placeholder="Type your story...">
-                        <p class="mb-6">It began as a simple thought—a flicker of ink on a pristine digital canvas.
-                            The rhythm of the keys creates a cadence, a quiet symphony of creation that exists only
-                            between the writer and the paper.</p>
-                        <p class="mb-6">In this space, distraction falls away. The borders of the interface recede,
-                            leaving only the words. We prioritize clarity above all else, ensuring that every sentence
-                            has room to breathe and every idea has the weight it deserves.</p>
-                    </div> --}}
-                    {{-- <input type='text'
-                    {{-- value ="{{ $post->contant }}" --}}
-                    {{-- name="content"
-                        class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg resize-none placeholder:text-surface-variant text-on-surface leading-relaxed"
-                      placeholder="Type your story..."
-                      /> --}}
-
-                    <button type="submit"
-                        class="mt-6 bg-primary-container text-on-primary px-6 py-2 rounded-lg font-ui-button text-ui-button hover:opacity-90 active:scale-95 transition-all">
-                        Publish
-                    </button>
-                </div>
-            </div>
-            <!-- Sidebar: Publishing Settings -->
-            <aside
-                class="hidden lg:block w-80 shrink-0 h-fit sticky top-24 sidebar-overlay transition-opacity duration-500">
-                <div class="space-y-8 border-l border-outline-variant pl-8">
-                    <!-- Cover Image -->
-                    <section>
-                        <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
-                            Image</h3>
-                        @if ($post->cover_image)
-                            <div class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group"
-                                style="background-image: url('{{ asset('storage/' . $post->cover_image) }}'); background-size: cover; background-position: center;">
-                            @else
-                                <div
-                                    class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">
-                                    >
+</x-slot:head-scripts>
 
 
+<form action="{{ $action ?? route('posts.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method($method ?? 'POST')
 
+    <main class="pt-24 pb-32 flex flex-col md:flex-row max-w-container-max mx-auto px-gutter gap-12">
 
-                                    <span
-                                        class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
-                                    <span class="font-metadata text-metadata text-secondary">Upload high-res
-                                        photo</span>
-                                </div>
-                        @endif
-                </div>
-                <input type='file' name="cover" accept="image/png, image/jpeg ,image/jpg" />
-                @error('cover')
-
-                    @foreach ($errors->get('cover') as $error)
-                        <p class="text-sm text-red-600">{{ $error }}</p>
+        <!-- Editor Canvas -->
+        <div class="flex-1 max-w-article-max mx-auto w-full distraction-free-focus">
+            <div class="editor-container">
+                @if ($errors->any())
+                <div class="text-red-800 mb-4 border border-red-900 bg-red-300">
+                    @foreach ($errors->all() as $message)
+                    <p>{{ $message }}</p>
                     @endforeach
+                </div>
+                @endif
+                <!-- Title Field -->
+                <input type="text" name="title" value="{{ old('title', $post->title) }}"
+                    class="w-full bg-transparent border-none focus:ring-0 font-display-lg text-display-lg resize-none placeholder:text-surface-variant text-on-surface mb-8 overflow-hidden"
+                    placeholder="Enter your title...">
+                @error('title')
+                <p class="text-red-800">{{ $message }}</p>
                 @enderror
+                <!-- Floating Toolbar (Contextual) -->
+                {{-- 
+                <div class="sticky top-20 z-40 flex justify-center mb-12">
+                    <div
+                        class="bg-inverse-surface text-inverse-on-surface px-2 py-1.5 rounded-xl shadow-xl flex items-center gap-1 border border-outline/20">
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Bold">
+                            <span class="material-symbols-outlined">format_bold</span>
+                        </button>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Italic">
+                            <span class="material-symbols-outlined">format_italic</span>
+                        </button>
+                        <div class="w-px h-6 bg-white/10 mx-1"></div>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Heading 1">
+                            <span class="material-symbols-outlined">format_h1</span>
+                        </button>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Heading 2">
+                            <span class="material-symbols-outlined">format_h2</span>
+                        </button>
+                        <div class="w-px h-6 bg-white/10 mx-1"></div>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Quote">
+                            <span class="material-symbols-outlined">format_quote</span>
+                        </button>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Link">
+                            <span class="material-symbols-outlined">link</span>
+                        </button>
+                        <div class="w-px h-6 bg-white/10 mx-1"></div>
+                        <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" title="Image">
+                            <span class="material-symbols-outlined">image</span>
+                        </button>
+                    </div>
+                </div>
+                <!-- Main Content Editor -->
+                <div class="w-full min-h-[614px] bg-transparent border-none focus:outline-none font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
+                    contenteditable="true" data-placeholder="Type your story...">
+                    <p class="mb-6">It began as a simple thought—a flicker of ink on a pristine digital canvas. The
+                        rhythm of the keys creates a cadence, a quiet symphony of creation that exists only between the
+                        writer and the paper.</p>
+                    <p class="mb-6">In this space, distraction falls away. The borders of the interface recede, leaving
+                        only the words. We prioritize clarity above all else, ensuring that every sentence has room to
+                        breathe and every idea has the weight it deserves.</p>
+                </div>
+                --}}
+                <textarea name="content" id="content"
+                    class="w-full bg-transparent border-none focus:ring-0 font-body-lg text-body-lg text-on-surface leading-relaxed placeholder:text-surface-variant"
+                    data-placeholder="Type your story..."
+                    oninput='this.style.height = "";this.style.height = this.scrollHeight + "px"'>{{ old('content', $post->content) }}</textarea>
+                @error('content')
+                <p class="text-red-800">{{ $message }}</p>
+                @enderror
+            </div>
 
+            {{-- <section>
+                <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
+                    Metadata
+                </h3>
+                <div class="flex flex-col gap-4 mb-6">
+                    <label>Title</label>
+                    <input type="text" name="meta[title]" value="{{ old('meta.title', $post->meta['title'] ?? '') }}">
+                    @error('meta.title')
+                    <p class="text-red-800">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex flex-col gap-4 mb-6">
+                    <label>Description</label>
+                    <input type="text" name="meta[description]"
+                        value="{{ old('meta.description', $post->meta['description'] ?? '') }}">
+                    @error('meta.description')
+                    <p class="text-red-800">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex flex-col gap-4 mb-6">
+                    <label>Keywords</label>
+                    <input type="text" name="meta[keywords]"
+                        value="{{ old('meta.keywords', $post->meta['keywords'] ?? '') }}">
+                    @error('meta.keywords')
+                    <p class="text-red-800">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div class="flex flex-col gap-4 mb-6">
+                    <label>URL</label>
+                    <input type="text" name="meta[url]" value="{{ old('meta.url', $post->meta['url'] ?? '') }}">
+                    @error('meta.url')
+                    <p class="text-red-800">{{ $message }}</p>
+                    @enderror
+                </div>
+            </section> --}}
+
+            <button type="submit"
+                class="bg-primary text-on-primary px-6 py-3 rounded-lg font-ui-label text-ui-label hover:bg-primary-hover transition-colors">
+                Publish
+            </button>
+        </div>
+        <!-- Sidebar: Publishing Settings -->
+        <aside
+            class="hidden lg:block w-80 shrink-0 h-fit sticky top-24 sidebar-overlay transition-opacity duration-500">
+            <div class="space-y-8 border-l border-outline-variant pl-8">
+                <!-- Cover Image -->
+                <section>
+                    <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Cover
+                        Image
+                    </h3>
+                    @if ($post->cover_image)
+                    <div class="aspect-video w-full rounded-lg bg-cover bg-center mb-4"
+                        style="background-image: url('{{ asset('storage/' . $post->cover_image) }}')"></div>
+                    @else
+                    <div
+                        class="aspect-video w-full rounded-lg bg-surface-container border-2 border-dashed border-outline-variant flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-surface-container-high transition-colors group">
+                        <span
+                            class="material-symbols-outlined text-secondary group-hover:text-primary transition-colors">add_a_photo</span>
+                        <span class="font-metadata text-metadata text-secondary">Upload high-res photo</span>
+                    </div>
+                    @endif
+                    <input type="file" name="cover" />
+                    @error('cover')
+                    @foreach ($errors->get('cover') as $error)
+                    <p class="text-red-800">{{ $error }}</p>
+                    @endforeach
+                    @enderror
+                </section>
+                <section>
+                    <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Publish Time
+                    </h3>
+                    <input name="published_at" value="{{ old('published_at', $post->published_at) }}"
+                        class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2 font-metadata text-metadata focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                        placeholder="Add tag..." type="datetime-local" />
                 </section>
                 <!-- Tags -->
                 <section>
-                    <div class="space-y-2">
-                        <label for="category_id" class="text-sm font-medium">Category</label>
-                        <select name="category_id" id="category_id"
-                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary">
-                            <option value="">Select a Category</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}"
-                                    {{ old('category_id', $post->category_id ?? '') == $category->id ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        @error('category_id')
-                            <p class="text-sm text-red-600">{{ $message }}</p>
-                        @enderror
+                    <h3 class="font-ui-label text-ui-label text-on-surface mb-4 uppercase tracking-wider">Tags</h3>
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        @foreach ($post->tags as $tag)
+                        <span
+                            class="bg-primary-fixed text-on-primary-fixed px-3 py-1 rounded-full font-metadata text-metadata flex items-center gap-1">
+                            {{ $tag->name }} <span
+                                class="material-symbols-outlined text-[14px] cursor-pointer">close</span>
+                        </span>
+                        @endforeach
                     </div>
+                    <input name="tags" value="{{ old('tags') }}"
+                        class="w-full bg-white border border-outline-variant rounded-lg px-4 py-2 font-metadata text-metadata focus:ring-1 focus:ring-primary focus:border-primary transition-all"
+                        placeholder="Add tag..." type="text" />
                 </section>
                 <!-- SEO Preview -->
                 <section>
@@ -147,12 +179,14 @@
                     </div>
                     <div class="p-4 bg-white border border-outline-variant rounded-lg shadow-sm">
                         <div class="text-[#1a0dab] font-sans text-[18px] leading-tight mb-1 truncate">The Art of
-                            Digital Quiet | Ink &amp; Paper</div>
+                            Digital
+                            Quiet | Ink &amp; Paper</div>
                         <div class="text-[#006621] font-sans text-[14px] mb-1 truncate">inkandpaper.com/art-of-quiet
                         </div>
                         <p class="text-secondary font-sans text-[13px] line-clamp-2">Discover how a distraction-free
                             writing environment can transform your creative process and help you find your voice in
-                            a noisy world...</p>
+                            a
+                            noisy world...</p>
                     </div>
                 </section>
                 <!-- Visibility -->
@@ -169,8 +203,18 @@
                         </div>
                     </label>
                 </section>
-                </div>
-            </aside>
-        </main>
-    </form>
+            </div>
+        </aside>
+
+    </main>
+</form>
+
+<script>
+    tinymce.init({
+        selector: '#content',
+        plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+        toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+    });
+</script>
+
 </x-layout>

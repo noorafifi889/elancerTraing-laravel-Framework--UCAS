@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html class="light" lang="en">
 
 <head>
@@ -135,6 +134,7 @@
         }
     </script>
 {{$style  ??''}}
+{{ $head_scripts ?? $headScripts ?? '' }}
 </head>
 
 <body class="font-body-md text-body-md selection:bg-primary-fixed selection:text-on-primary-fixed">
@@ -177,7 +177,7 @@
         </div>
     </header>
     <!-- Main Content Layout -->
-<main class="{{ $mainStyle }}">
+<main class="{{ $mainStyle ?? '' }}">
     {{ $slot }}
 </main>
     <!-- Footer -->
