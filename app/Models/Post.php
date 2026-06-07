@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -45,4 +46,19 @@ class Post extends Model
  {
      return $this->hasMany(Comment::class ,"post_id","id");
  }
+
+ public function tags(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+ {
+     return $this->belongsToMany(Tag::class, 'post_tag', 'post_id', 'tag_id');
+ } 
+
+ public function content():Attribute
+ {
+     return new Attribute(
+        //  get: fn($value) => strip_tags($value, '<script><h1>'),
+         set: fn($value) => strip_tags($value, '<h2><h3><h4><h5><h6><p><br><ul><ol><li><a><strong><em> ')
+     );
+ }
+
+ 
 }
