@@ -11,15 +11,12 @@ public function  __construct(){
     $this->posts = include(public_path('data/posts.php')); //include file and assign it to $posts property
 }
 
-public function show(int $id, string $slug)
+public function show(string $slug)
 {
-    $post = collect($this->posts)->firstWhere('id', $id);
 
-    if (!$post) {
-        abort(404);
-    }
-
-    return view('blog.single-standard', [
+    // return"test";
+   $post=  Post::query()->where('slug' , $slug)->firstOrFail();
+    return view('posts.show', [
         'post' => $post
     ]);
 }
