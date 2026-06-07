@@ -15,6 +15,9 @@ use App\Http\Controllers\CategoryController;
 // 1. روابط الصفحة الرئيسية للموقع
 Route::get('/', HomeController::class)->name('home');
 
+Route::get('/posts/{slug}', [\App\Http\Controllers\PostController::class, 'show'])
+    ->name('posts.show');
+
 // الواجهة الأمامية
 Route::resource('categories', CategoryController::class)->only(['index', 'show']);
 
@@ -32,6 +35,9 @@ Route::resource('posts', PostController::class);
 Route::get('/posts/{id}/{slug}', [PostController::class, 'show'])
      ->where(['id' => '[0-9]+', 'slug' => '[a-zA-Z0-9\-]+']);
 
+     
+
+    
 Route::prefix('dashboard')->group(function () {
     
     Route::resource('posts', PostController::class)->names([
