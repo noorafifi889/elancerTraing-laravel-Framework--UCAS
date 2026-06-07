@@ -7,13 +7,16 @@ use Illuminate\Http\Request;
 use App\Models\Post;
     use App\Actions\FileUpload;
 use App\Http\Requests\PostRequest;
-    
+    use App\Actions\SyncPostTags;
+
 use App\Models\Category;
+use App\SyncPostTags as AppSyncPostTags;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use League\CommonMark\Extension\CommonMark\Node\Inline\Strong;
+use Throwable;
 
 class PostController extends Controller
 {
@@ -74,9 +77,8 @@ public function create()
     return view('dashboard.posts.create', compact('categories', 'post'));
 }
 
-
-public function store(PostRequest $request , FileUpload $fileUpload)
-{
+  public function store(PostRequest $request, FileUpload $fileUpload, AppSyncPostTags $syncPostTags)
+    {
     // 1. التحقق من رفع الصورة وتخزينها
     // $cover_image_path = null;
     // if ($request->hasFile('cover')) {
@@ -97,22 +99,41 @@ public function store(PostRequest $request , FileUpload $fileUpload)
 //       'max:1024'
 //       ]
 // ]);
+ 
+        //$fileUpload = app(FileUpload::class);
+        $clean = $request->validated();
+$data['content'] =strip_tags($clean['content'], '<script><h1>'); 
 
-$clean =$request->validated();
-      // 2. دمج بيانات الفورم مع البيانات التلقائية وحفظها مباشرة
-Post::create(array_merge($clean, [
-    'user_id'     => auth()->id(),  // 👈 هون فقط
-    'slug'        => Str::slug($request->title),
-    'status'      => 'published',
-    'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public')
-]));
+        $data = array_merge($clean, [
+            'user_id' => $request->user()->id,
+            'slug' => Str::slug($request->post('title')),
+            'status' => 'published',
+            'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers'),
+        ]);
 
-    return redirect()->to('/dashboard/posts')
-    ->with('success', 'Post created successfully!');
-}
-    /**
-     * Display the specified resource.
-     */
+        DB::beginTransaction();
+
+        try {
+            $post = Post::create($data);
+            $syncPostTags->handle($post, $clean['tags'] ?? '');
+
+            DB::commit();
+        } catch (Throwable $e) {
+            DB::rollBack();
+
+            return back()
+                ->withInput()
+                ->withErrors([
+                    'error' => 'Failed to create post: ' . $e->getMessage(),
+                ]);
+        }
+
+        // PRG: POST Redirect GET
+        return redirect()
+            ->route('posts.index')
+            ->with('status', 'Post created!');
+    }
+    
     public function show(string $id)
     {
         $post = Post::find($id);
@@ -145,7 +166,7 @@ $categories = Category::all();
 
     // 3. معالجة الصورة: إذا رُفعت صورة جديدة نأخذ مسارها، وإلا نحتفظ بالصورة القديمة
     $cleanData['cover_image'] = $fileUpload->handle(key: 'cover', path: 'covers', disk: 'public') ?? $post->cover_image;
-
+$data['content'] =strip_tags($cleanData['content'], '<script><h1>'); 
     // 4. تحديث بيانات المقال في قاعدة البيانات بالبيانات النظيفة فقط
     $post->update($cleanData);
 
