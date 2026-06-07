@@ -60,5 +60,23 @@ class Post extends Model
      );
  }
 
- 
+
+ public function  title ():Attribute {
+    return new Attribute(
+        get: fn() => ucwords($this->attributes(title)),
+        set  : fn($value) => strip_tags($value),
+
+    );
+ }
+
+public function thumbnailUrl(): Attribute
+{
+    return Attribute::make(
+        get: function () {
+            return $this->cover_image
+                ? asset('storage/' . $this->cover_image)
+                : asset('images/default-thumbnail.jpg');
+        }
+    );
+}
 }
