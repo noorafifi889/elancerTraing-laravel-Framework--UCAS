@@ -125,7 +125,7 @@
                             {{ $post->title }}
                         </h3>
                         <p class="text-metadata font-metadata text-on-surface-variant mt-1">
-                            Published on {{ $post->created_at->format('M j, Y') }}
+                            Published on {{ $post->published_at?->format('M d, Y') ?? 'N/A' }}
                         </p>
                     </div>
 
@@ -146,9 +146,9 @@
 
                     <!-- الحالة -->
                     <div class="md:col-span-2">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[12px] font-bold border border-green-200">
-                            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span> 
-                            {{ $post->status }}
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-{{ $post->status->getColor() }}-700 text-[12px] font-bold border border-green-200">
+                            <span class="h-1.5 w-1.5 rounded-full bg-{{ $post->status->getColor() }}-600"></span> 
+                            {{ ucfirst($post->status->value) }}
                         </span>
                     </div>
 

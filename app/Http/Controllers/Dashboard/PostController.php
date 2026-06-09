@@ -8,7 +8,7 @@ use App\Models\Post;
     use App\Actions\FileUpload;
 use App\Http\Requests\PostRequest;
     use App\Actions\SyncPostTags;
-
+use App\Enum\PostStatus;
 use App\Models\Category;
 use App\SyncPostTags as AppSyncPostTags;
 use Illuminate\Support\Facades\Auth;
@@ -137,9 +137,13 @@ $data['content'] =strip_tags($clean['content'], '<script><h1>');
             ->with('status', 'Post created!');
     }
     
-    public function show(string $id)
+    public function show(string $stug)
     {
-        $post = Post::find($id);
+        $post = Post::query()
+       ->published()
+       
+        ->slug($stug)
+        ->firstOrFail();
         if (!$post) { // 👈 تم تصحيح الشرط المقلوب ليعمل بشكل سليم
             abort(404);
         }
@@ -151,6 +155,8 @@ $data['content'] =strip_tags($clean['content'], '<script><h1>');
      */
     public function edit(string $id)
     {
+                // $post = Post::where('user_id', Auth::id())->findOrFail($id);
+
         $post = Post::findOrFail($id);
 $categories = Category::all();
     return view('dashboard.posts.edit', compact('post', 'categories')); 
