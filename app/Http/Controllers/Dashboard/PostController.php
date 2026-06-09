@@ -38,9 +38,11 @@ class PostController extends Controller
         }, ['published', 'draft', 'archived']);
 
      $user= Auth::user();
+    //  dd(Auth::check(), Auth::user());
+
       $posts = $user->posts()
       ->with('category','user')
-      ->select(['id', 'user_id', 'category_id', 'title','views', 'slug', 'status', 'created_at'])
+      ->select(['id', 'user_id', 'category_id', 'title','views', 'slug', 'status', 'created_at' , 'published_at' , 'cover_image'])
       
 //       ->addSelect(
 //     DB::raw('(select count(*) from comments where comments.post_id = posts.id) as comments_count')
@@ -102,6 +104,7 @@ public function create()
  
         //$fileUpload = app(FileUpload::class);
         $clean = $request->validated();
+        $request->post('meta.url');
 $data['content'] =strip_tags($clean['content'], '<script><h1>'); 
 
         $data = array_merge($clean, [
@@ -110,7 +113,7 @@ $data['content'] =strip_tags($clean['content'], '<script><h1>');
             'status' => 'published',
             'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers'),
         ]);
-
+    // dd($data);
         DB::beginTransaction();
 
         try {

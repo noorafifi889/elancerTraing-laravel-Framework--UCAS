@@ -24,26 +24,48 @@ class PostRequest extends FormRequest
      *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
-    public function rules(): array
-    {
-        return [
-    'title' => ['required', 'string', 'min:3', 'max:255'],
-    'content' => ['required',
-     'string',
-      'max:99999',
-      new Restricted( ['god','hell'])
-      
-      ],
-    'cover' =>[
-    'nullable',    
-    'image' ,
-    'mimes:png,jpg' ,
-     'mimetypes:image/png,image/jpeg' ,
-      'dimensions:min_width=600,min_height=400,max_width=2000,max_height=2000',
-      'max:1024'
-      ]
-        ];
-    }
+ public function rules(): array
+{
+    return [
+        'title' => ['required', 'string', 'min:3', 'max:255'],
+        
+        'content' => [
+            'required',
+            'string',
+            'max:99999',
+            new Restricted(['god', 'hell'])
+        ],
+        
+        'cover' => [
+            'nullable',    
+            'image',
+            'mimes:png,jpg',
+            'mimetypes:image/png,image/jpeg',
+            'dimensions:min_width=600,min_height=400,max_width=2000,max_height=2000',
+            'max:1024'
+        ],
+        
+        'tags' => [
+            'nullable',
+            'string',
+        ],
+        'meta'=>[
+            'nullable',
+            'array',
+        ],
+        'meta.url' =>['nullable','url'],
+        'meta.description' => ['nullable', 'string', 'max:500'],
+        'meta.keywords' => ['nullable', 'string', 'max:255'],
+        'meta.author' => ['nullable', 'string', 'max:255'],
+        'meta.title' => ['nullable', 'string', 'max:255'],
+        'published_at' => [
+            'nullable',
+            'date', 
+        ],
+        
+ 
+    ];
+}
     public function messages():array
 {
 return[];

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enum\PostStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -35,8 +37,18 @@ class Post extends Model
         'slug',
         'cover_image',
         'status',
-        'views'
+        'views',
+        'published_at',
+        'meta',
     ];
+    protected function casts():array {
+return [  'published_at' => 'datetime',
+        'meta' => 'json',
+        'status' => PostStatus::class,
+   
+];
+    }
+      
 
     public function user() :BelongsTo{
         return $this->belongsTo(User::class);
@@ -61,13 +73,14 @@ class Post extends Model
  }
 
 
- public function  title ():Attribute {
-    return new Attribute(
-        get: fn() => ucwords($this->attributes(title)),
-        set  : fn($value) => strip_tags($value),
-
+public function title(): Attribute
+{
+    return Attribute::make(
+        get: fn ($value) => ucwords($value),
+        set: fn ($value) => strip_tags($value),
     );
- }
+}
+ 
 
 public function thumbnailUrl(): Attribute
 {
@@ -79,4 +92,16 @@ public function thumbnailUrl(): Attribute
         }
     );
 }
+
+
+public function publishedAt(): Attribute
+{
+    return Attribute::make(
+        get: fn($value) =>new Carbon($value) ?: $this->created_at
+    );
+}
+ 
+
+
+
 }
