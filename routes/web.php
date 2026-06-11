@@ -35,8 +35,9 @@ Route::resource('posts', PostController::class);
 Route::get('/posts/{id}/{slug}', [PostController::class, 'show'])
      ->where(['id' => '[0-9]+', 'slug' => '[a-zA-Z0-9\-]+']);
 
-     
+Route::put('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
 
+     Route::delete('/posts/{id}/force', [PostController::class, 'forceDelete'])->name('posts.force-delete');
     
 Route::prefix('dashboard')->group(function () {
     
