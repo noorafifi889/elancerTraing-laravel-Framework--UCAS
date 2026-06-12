@@ -238,7 +238,7 @@
                             </div>
                         </div>
                     @endforeach
-{{ $post->links() }}
+{{ $posts->links() }}
 
                     </div >
                 <div class="flex items-center justify-between pt-8">
