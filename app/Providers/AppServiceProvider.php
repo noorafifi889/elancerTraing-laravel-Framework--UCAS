@@ -2,26 +2,28 @@
 
 namespace App\Providers;
 
+use App\Events\PostViewed;
+use App\Listeners\IncrementPostViews;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
+    
     public function register(): void
     {
-        $this->app->bind('test',function ($app){
+        $this->app->bind('test', function ($app) {
             return '';
-        } );
-        
+        });
     }
 
-    /**
-     * Bootstrap any application services.
-     */
+
     public function boot(): void
     {
-         echo  $this->app->make('test'); 
+        echo  $this->app->make('test');
+        Event::Listen(
+           PostViewed::class  , IncrementPostViews::class,
+        );
+
     }
 }

@@ -19,7 +19,7 @@
                                 <button
                                     class="text-primary font-ui-label text-ui-label font-semibold hover:underline">Follow</button>
                             </div>
-                            <p class="font-metadata text-metadata text-secondary">{{ $post->created_at }} · 12 min read</p>
+                            <p class="font-metadata text-metadata text-secondary">{{ $post->created_at }} · 12 min read |  {{$post->views}} views </p>
                         </div>
                     </div>
                     <div class="flex gap-2">

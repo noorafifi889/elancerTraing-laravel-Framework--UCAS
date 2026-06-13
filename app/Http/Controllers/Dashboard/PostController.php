@@ -53,8 +53,8 @@ class PostController extends Controller
             ->withCount('comments') // 👈 هذا السطر يضيف عمود comments_count تلقائياً بناءً على العلاقة
             ->where('status', $status)
             ->orderBy('created_at', "desc")
-            ->paginate(3);
-        //   ->get();
+            ->paginate(3)
+          ->get();
 
 
         // $posts = Post::with('category')
@@ -151,7 +151,7 @@ class PostController extends Controller
         if (!$post) { // 👈 تم تصحيح الشرط المقلوب ليعمل بشكل سليم
             abort(404);
         }
-        return view('dashboard.posts.show', ['post' => $post]);
+        return view('posts.show', ['post' => $post]);
     }
 
     /**

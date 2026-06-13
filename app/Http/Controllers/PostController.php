@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PostViewed;
 use Illuminate\Http\Request;
 use App\Models\Post;
 class PostController extends Controller
@@ -21,7 +22,10 @@ public function show(string $slug)
 {
 
     // return"test";
-   $post=  Post::query()->published()->latest()->get();
+   $post=  Post::query()->where('slug',$slug)->first();
+//    event('posts.viewed' , $post);
+event(new PostViewed($post));
+//    $post->increment('views');
     return view('posts.show', [
         'post' => $post
     ]);
