@@ -16,4 +16,18 @@ class Category extends Model
     {
 return $this->hasMany(Post::class ,"category_id","id");
     }
+
+
+protected static function booted()
+{
+    static::restored(function (Category $category) {
+        $category->posts()->update([
+            'deleted_at' => null,
+        ]);
+    });
+
+    static::deleted(function (Category $category){
+$category->posts()->delete();
+    });
+}
 }

@@ -53,8 +53,8 @@ class PostController extends Controller
             ->withCount('comments') // 👈 هذا السطر يضيف عمود comments_count تلقائياً بناءً على العلاقة
             ->where('status', $status)
             ->orderBy('created_at', "desc")
-            ->paginate(3)
-          ->get();
+            ->paginate(3);
+        //   ->get();
 
 
         // $posts = Post::with('category')
@@ -112,8 +112,8 @@ class PostController extends Controller
         $data['content'] = strip_tags($clean['content'], '<script><h1>');
 
         $data = array_merge($clean, [
-            'user_id' => $request->user()->id,
-            'slug' => Str::slug($request->post('title')),
+            // 'user_id' => $request->user()->id,
+            // 'slug' => Str::slug($request->post('title')),
             'status' => 'published',
             'cover_image' => $fileUpload->handle(key: 'cover', path: 'covers'),
         ]);
@@ -220,9 +220,9 @@ class PostController extends Controller
         $post = Post::onlyTrashed()->findOrFail($id);
 
         // حذف الصورة من التخزين إذا كانت موجودة
-        if ($post->cover_image) {
-            Storage::disk('public')->delete($post->cover_image);
-        }
+        // if ($post->cover_image) {
+        //     Storage::disk('public')->delete($post->cover_image);
+        // }
 
         $post->forceDelete();
 

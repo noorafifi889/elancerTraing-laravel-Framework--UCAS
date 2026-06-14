@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enum\PostStatus;
 use App\Models\Scopes\OwnerScope;
+use App\Observers\PostObserver;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,7 +14,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Builder; // <-- تأكدي أن هذا السطر موجود فوق
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 #[ScopedBy(OwnerScope::class   )]
 
 class Post extends Model
@@ -60,12 +62,25 @@ use SoftDeletes;
 
         ];
     }
-
+ 
     //global scope to filter posts by the authenticated user, unless the user is an admin
     protected static function  booted()
     {
 
-        static::addGlobalScope('owner', new OwnerScope);
+        // static::addGlobalScope('owner', new OwnerScope);
+// static::creating(function (Post $post){
+//     $post->slug =Str::slug($post->title);
+//     $post->user_id =Auth::id();
+    
+// });
+
+// static::forceDeleted(function(Post $post){
+// if($post->cover_image){
+//     Storage::disk('public')->delete($post->cover_image);
+// }
+// });
+
+static::observe(new PostObserver());
     }
 
 public function scopePublished(Builder $builder , $time = null){
