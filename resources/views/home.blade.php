@@ -157,8 +157,7 @@
             @include('asides.Trending')
             <!-- Who to Follow -->
             <x-recommended-authors title= "Followers" count="3" />
-
-            <!-- Newsletter Sign Up -->
+<x-recommended-authors title="Followers" count="3" />            <!-- Newsletter Sign Up -->
             <x-widgets.newslatter>
                 <x-slot:helper>
                     <h1> hello world</h1>
