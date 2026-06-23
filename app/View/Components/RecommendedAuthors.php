@@ -2,45 +2,37 @@
 
 namespace App\View\Components;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\Component;
 
 class RecommendedAuthors extends Component
 {
-    // تعريف المتغيرات التي ستمر إلى الـ View تلقائياً
-    public array $authors = [];
-    public string $title;
 
-    public array $data = [
-        [
-            'id' => 1,
-            'name' => 'John Doe',
-            'username' => 'johndoe',
-            'avatar' => 'https://randomuser.me/api/portraits/men/1.jpg' // تم إغلاق النص هنا
-        ],
-        [
-            'id' => 2,
-            'name' => 'Jane Smith',
-            'username' => 'janesmith',
-            'avatar' => 'https://randomuser.me/api/portraits/women/2.jpg',
-        ],
-        [
-            'id' => 3,
-            'name' => 'Alice Johnson',
-            'username' => 'alicej', // تم إكمال وإغلاق العنصر الثالث هنا
-            'avatar' => 'https://randomuser.me/api/portraits/women/3.jpg',
-        ]
-    ]; // تم إغلاق المصفوفة الكبيرة بشكل صحيح
+    public $authors;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($title = "Recommended Authors" , $authors = [] , $count = 3)
+    public function __construct(public $title = 'Recommended Authors', $count = 3)
     {
-        $this->title = $title;
-        $this->authors = $this->data; // تعيين البيانات إلى المتغير الذي سيتم استخدامه في الـ View
+        /*
+        SELECT users.*, 
+        (SELECT 1 followers WHERE followers.follower_id = users.id AND followers.user_id = :auth) AS followings_exists 
+        FROM users LIMIT :count;
+        */
 
+        $this->authors = User::query()
+            ->withExists([
+                'followers' => function ($query) {
+                    $query->where('follower_id', Auth::id() ?? 0);
+                }
+            ])
+            ->where('id', '<>', Auth::id() ?? 0)
+            ->limit($count)
+            ->get();
     }
 
     /**
