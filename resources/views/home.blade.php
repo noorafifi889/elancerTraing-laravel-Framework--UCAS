@@ -156,7 +156,7 @@
             <!-- Trending Section -->
             @include('asides.Trending')
             <!-- Who to Follow -->
-            <x-recommended-authors title= "Followers" count="3" />
+            {{-- <x-recommended-authors title= "Followers" count="3" /> --}}
 <x-recommended-authors title="Followers" count="3" />            <!-- Newsletter Sign Up -->
             <x-widgets.newslatter>
                 <x-slot:helper>

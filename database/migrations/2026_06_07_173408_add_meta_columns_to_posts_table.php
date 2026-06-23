@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('posts', function (Blueprint $table) {
-            // $table->timestamp('published_at')->nullable()->after('status');
-$table->json('meta')->nullable()->after('published_at');
+             $table->timestamp('published_at')->nullable()->after('status');
+$table->json('meta')->nullable();
 $table->softDeletes();
             $table->index('published_at');
 
