@@ -13,16 +13,23 @@ class OwnerScope implements Scope
 
 public function apply(Builder $builder, Model $model): void
 {
-    if (Auth::check()) {
-        $user = Auth::user();
+    if (!Auth::check()) return;
 
-        if ($user->is_admin) {
-            return;
-        }
+    $user = Auth::user();
 
-        if (request()->routeIs('dashboard*')) {
-            $builder->where('user_id', Auth::id());
+    if ($user->is_admin) return;
+
+    // 👇 تجاهل الـ scope على الـ subqueries (withCount, with, إلخ)
+    if ($builder->getQuery()->wheres) {
+        foreach ($builder->getQuery()->wheres as $where) {
+            if (isset($where['column']) && str_contains($where['column'], 'post_id')) {
+                return; // هاد subquery داخلي، ما نطبق عليه scope
+            }
         }
+    }
+
+    if (request()->routeIs('dashboard.*')) {
+        $builder->where('posts.user_id', Auth::id());
     }
 }
 }

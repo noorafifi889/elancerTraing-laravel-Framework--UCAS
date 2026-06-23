@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -14,7 +15,7 @@ class FollowNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct(protected  User $user,protected  User $follower)
     {
         //
     }
@@ -24,9 +25,25 @@ class FollowNotification extends Notification
      *
      * @return array<int, string>
      */
-    public function via(object $notifiable): array
-    {
-        return ['mail'];
+
+
+public function via(object $notifiable): array
+{
+    $via = ['database'];
+
+    if ($notifiable->sms_notify) {
+        $via[] = 'vonage';
+    }
+
+    if ($notifiable->email_notify) {
+        $via[] = 'mail';
+    }
+
+    if ($notifiable->broadcast_notify) {
+        $via[] = 'broadcast';
+    }
+
+    return $via;
     }
 
     /**
@@ -36,7 +53,21 @@ class FollowNotification extends Notification
     {
         return (new MailMessage)->markdown('mail.follow-notification');
     }
+public function toDatabase(object $notifiable):array{
 
+return [
+
+'title' =>'New follower',
+'body' =>'{$this->follower->name} started following you .',
+'link'=>route('users.profile',$this->follower->username),
+'meta' =>[
+    'follower_id'=>$this->follower->id ,
+    'follower_avster'=>$this->follower->avatar,
+
+    
+    ]
+];
+}
     /**
      * Get the array representation of the notification.
      *
