@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Dashboard\PostController;
 use App\Http\Controllers\HomeController;  
 use App\Http\Controllers\CategoryController;
-
+use App\Http\Controllers\Dashboard\NotificationController;
+use App\Http\Controllers\FollowController;
+use App\Http\Controllers\PostController as ControllersPostController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,13 @@ Route::get('/posts/{slug}', [\App\Http\Controllers\PostController::class, 'show'
 
 // الواجهة الأمامية
 Route::resource('categories', CategoryController::class)->only(['index', 'show']);
+Route::post('users/{user}/follow', [FollowController::class, 'store'])
+    ->name('users.follow')   
+     ->middleware('auth:web');
+
+Route::delete('users/{user}/unfollow', [FollowController::class, 'destroy'])
+    ->name('users.unfollow')
+    ->middleware('auth:web');
 
 // Dashboard محمي
 Route::middleware(['auth:web'])
@@ -36,9 +45,8 @@ Route::get('/posts/{id}/{slug}', [PostController::class, 'show'])
      ->where(['id' => '[0-9]+', 'slug' => '[a-zA-Z0-9\-]+']);
 
 Route::put('/posts/{id}/restore', [PostController::class, 'restore'])->name('posts.restore');
-
      Route::delete('/posts/{id}/force', [PostController::class, 'forceDelete'])->name('posts.force-delete');
-    
+    Route::get('/u/{username}', function (){})->name('users.profile');
 Route::prefix('dashboard')->group(function () {
     
     Route::resource('posts', PostController::class)->names([
@@ -54,6 +62,18 @@ Route::prefix('dashboard')->group(function () {
     // رواتس إدارة الكاتيجوري - طلعت برا السجن وصارت نظيفة وجاهزة
     Route::resource('categories', CategoryController::class);
     
+
+    Route::group([
+        'as'=>'notificatios.',
+        'prefix'=>'notifications/',
+        'controller' =>NotificationController::class,
+    ] , function  (){
+Route::get('/' ,'index')->name('index');
+ROute::patch('/{id}/read' , 'read')->name('read');
+ROute::patch('/{id}/unread' , 'unread')->name('unread');
+ROute::delete('/{id}/unread' , 'destroy')->name('destroy');
+
+    });
 });
 
 // 4. روت مؤقت للتست (لو حابة تفحصي الـ Create للبوستات برابط مستقل)
