@@ -163,10 +163,44 @@
                         placeholder="Search..." type="text" />
                 </div>
                 <div class="flex items-center gap-2">
-                    <button
-                        class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
-                        <span class="material-symbols-outlined" data-icon="notifications">notifications</span>
-                    </button>
+              <div class="relative">
+    <button
+        onclick="document.getElementById('notifications-menu').classList.toggle('hidden')"
+        class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
+        <span class="material-symbols-outlined">notifications</span>
+    </button>
+
+    <div id="notifications-menu"
+         class="hidden absolute right-0 mt-2 w-80 bg-white border border-outline-variant rounded-lg shadow-lg z-50">
+
+        <div class="p-4 border-b border-outline-variant">
+            <h3 class="font-bold">Notifications</h3>
+        </div>
+
+        <div class="max-h-96 overflow-y-auto">
+            <a href="#" class="block p-4 hover:bg-surface-container">
+                <p class="font-medium">Noor started following you</p>
+                <span class="text-xs text-secondary">2 minutes ago</span>
+            </a>
+
+            <a href="#" class="block p-4 hover:bg-surface-container">
+                <p class="font-medium">New comment on your post</p>
+                <span class="text-xs text-secondary">10 minutes ago</span>
+            </a>
+
+            <a href="#" class="block p-4 hover:bg-surface-container">
+                <p class="font-medium">Your article was published</p>
+                <span class="text-xs text-secondary">1 hour ago</span>
+            </a>
+        </div>
+
+        <div class="p-3 border-t border-outline-variant text-center">
+            <a href="#" class="text-primary text-sm font-medium">
+                View all notifications
+            </a>
+        </div>
+    </div>
+</div>
                     <button
                         class="p-2 text-on-surface-variant hover:bg-surface-container-high rounded-full transition-all">
                         <span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
