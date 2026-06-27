@@ -55,6 +55,8 @@ public function followers()
     );
 }
 
+
+
     public function posts(): HasMany
     {
         return $this->hasMany(Post::class, "user_id", 'id');

@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class FollowNotification extends Notification
 {
@@ -15,10 +16,10 @@ class FollowNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct(protected  User $user,protected  User $follower)
-    {
-        //
-    }
+public function __construct(public User $follower) 
+{
+    //
+}
 
     /**
      * Get the notification's delivery channels.
@@ -53,30 +54,24 @@ public function via(object $notifiable): array
     {
         return (new MailMessage)->markdown('mail.follow-notification');
     }
-public function toDatabase(object $notifiable):array{
 
-return [
 
-'title' =>'New follower',
-'body' =>'{$this->follower->name} started following you .',
-'link'=>route('users.profile',$this->follower->username),
-'meta' =>[
-    'follower_id'=>$this->follower->id ,
-    'follower_avster'=>$this->follower->avatar,
 
-    
-    ]
-];
-}
-    /**
-     * Get the array representation of the notification.
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
+    public function toDatabase(object $notifiable): array
     {
         return [
-            //
+            'title' => 'New follower',
+            'body' => "{$this->follower->name} started following you.", // سيجلب اسم الفلور الصحيح الآن
+            'link' => route('users.profile', $this->follower->id),
+            'meta' => [
+                'follower_id' => $this->follower->id,
+                'follower_avatar' => $this->follower->avatar,
+            ],
         ];
+    }
+
+    public function toArray(object $notifiable): array
+    {
+        return $this->toDatabase($notifiable);
     }
 }

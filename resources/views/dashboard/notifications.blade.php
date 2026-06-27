@@ -1,5 +1,5 @@
 <x-layout title="Notifications">
-{{ dd($notifications->count()) }}
+    {{-- {{ dd($notifications->count()) }} --}}
 
     <main class="pt-24 max-w-article-max mx-auto px-margin-mobile md:px-0 mt-12 mb-section-gap">
         <!-- Page Header -->
@@ -36,38 +36,49 @@
         <!-- Notification Groups -->
         <div class="space-y-12">
             <!-- Today -->
-            <section>
-                <h2 class="font-ui-label text-ui-label text-secondary uppercase tracking-widest mb-6">Today</h2>
-                <div class="space-y-0.5">
-                    @foreach ($notifications as $notification)
-                    <div
-                        class="group relative flex items-start gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-container-lowest transition-all cursor-pointer">
-                        <div class="relative">
-                            <img alt="User avatar" class="w-10 h-10 rounded-full object-cover"
-                                data-alt="A sharp, detailed portrait of a female content creator with an expressive and friendly gaze. She is in a bright, airy office space with soft daylight illuminating her face. The style is modern, editorial, and sophisticated, using a clean color palette of whites and soft grays to match a minimalist UI."
-                                src="{{ $notification->data['meta']['follower_avatar'] ?? '' }}" />
-                            <div
-                                class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
-                                <span class="material-symbols-outlined text-[14px] text-primary" data-icon="favorite"
-                                    style="font-variation-settings: 'FILL' 1;">favorite</span>
-                            </div>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-body-md text-on-surface leading-tight">
-                                {{ $notification->data['body'] }}
-                            </p>
-                            <span
-                                class="font-metadata text-metadata text-secondary mt-1 block">{{ $notification->created_at->diffForHumans() }}</span>
-                        </div>
-                        <div class="pt-2">
-                            @if ($notification->unread())
-                            <div class="active-dot"></div>
-                            @endif
-                        </div>
+<section>
+    <h2 class="font-ui-label text-ui-label text-secondary uppercase tracking-widest mb-6">Today</h2>
+    <div class="space-y-0.5">
+        {{-- {{ dd($notifications) }} --}}
+        @foreach ($notifications as $notification)
+            @php
+                // خطوة أمان: للتأكد 100% أن البيانات مصفوفة وليست نصاً مكسوراً
+                $data = is_string($notification->data) ? json_decode($notification->data, true) : $notification->data;
+                // dd($data);
+            @endphp
+            
+            <div class="group relative flex items-start gap-4 p-4 -mx-4 rounded-lg hover:bg-surface-container-lowest transition-all cursor-pointer">
+                <div class="relative">
+                    <img alt="User avatar" class="w-10 h-10 rounded-full object-cover"
+                        src="{{ $data['meta']['follower_avatar'] ?? 'https://via.placeholder.com/150' }}" />
+                    
+                    <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-white rounded-full flex items-center justify-center shadow-sm">
+                        <span class="material-symbols-outlined text-[14px] text-primary" data-icon="favorite" style="font-variation-settings: 'FILL' 1;">favorite</span>
                     </div>
-                    @endforeach
                 </div>
-            </section>
+                
+                <div class="flex-1 min-w-0">
+                    <p class="font-body-md text-on-surface leading-tight">
+                        {{ $data['body'] ?? 'New notification received' }}
+                    </p>
+                    <span class="font-metadata text-metadata text-secondary mt-1 block">
+                        {{ $notification->created_at->diffForHumans() }}
+                    </span>
+                </div>
+                
+                <div class="pt-2">
+                    @if (is_null($notification->read_at))
+                        <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                    @endif
+                </div>
+            </div>
+        @endforeach
+    </div>
+
+    <div class="mt-6">
+        {{ $notifications->links() }}
+    </div>
+</section>
         </div>
         <!-- Loading Indicator / End of feed -->
         <div class="mt-16 flex flex-col items-center justify-center py-8 border-t border-outline-variant border-dashed">

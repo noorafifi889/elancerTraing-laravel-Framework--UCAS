@@ -8,33 +8,42 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function index()
-    {
+  public function index()
+{
+    $user = Auth::user();
+  
 
-        $user = Auth::user();
-        return view('dashboard.notifications', ['notifications' => $user->notifications()->paginate()]);
-    }
-
+    $notifications = $user->notifications()->paginate(10); 
+  
+    // dd([
+    //     'current_user_id' => $user->id,
+    //     'current_user_name' => $user->name,
+    //     'all_notifications_in_db' => \Illuminate\Support\Facades\DB::table('notifications')->select('id', 'notifiable_id', 'data')->get()
+    // ]);
+    return view('dashboard.notifications', compact('notifications'));
+}
 
     public function read(string $id)
     {
         $user = AUth::user();
         $notification = $user->unreadnotifications()->findOrFail($id);
         $notification->markAsRead();
-        return  redirect()->route('dashboard.notifications.index');
+return redirect()->route('notifications.index');
     }
-      public function unread(string $id)
-    {
-        $user = AUth::user();
-        $notification = $user->readnotifications()->findOrFail($id);
-        $notification->markAsRead();
-        return  redirect()->route('dashboard.notifications.index');
-    }  
+public function unread(string $id)
+{
+    $user = Auth::user();
+    $notification = $user->readNotifications()->findOrFail($id);
+    $notification->markAsUnread(); // ✅ هيك لازم يكون
+    return redirect()->route('notifications.index');
+}
 
-    public  function destroy(){
-          $user = AUth::user();
-        $notification = $user->notifications()->findOrFail($id);
-        $notification->delete();
-        return  redirect()->route('dashboard.notifications.index');
-    }
+
+public function destroy(string $id) // ✅ لازم تضيف string $id
+{
+    $user = Auth::user();
+    $notification = $user->notifications()->findOrFail($id);
+    $notification->delete();
+    return redirect()->route('notifications.index');
+}
 }

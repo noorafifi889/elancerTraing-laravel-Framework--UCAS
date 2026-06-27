@@ -64,16 +64,16 @@ Route::prefix('dashboard')->group(function () {
     
 
     Route::group([
-        'as'=>'notificatios.',
-        'prefix'=>'notifications/',
-        'controller' =>NotificationController::class,
-    ] , function  (){
-Route::get('/' ,'index')->name('index');
-ROute::patch('/{id}/read' , 'read')->name('read');
-ROute::patch('/{id}/unread' , 'unread')->name('unread');
-ROute::delete('/{id}/unread' , 'destroy')->name('destroy');
-
-    });
+    'as' => 'notifications.', // ❌ كان: 'notificatios.' (ناقص n)
+    'prefix' => 'notifications',
+    'controller' => NotificationController::class,
+], function () {
+    Route::get('/', 'index')->name('index');
+    Route::patch('/{id}/read', 'read')->name('read');
+    Route::patch('/{id}/unread', 'unread')->name('unread');
+    // ❌ نفس المسار لـ unread و destroy!
+    Route::delete('/{id}', 'destroy')->name('destroy'); // ✅ غيّر المسار
+});
 });
 
 // 4. روت مؤقت للتست (لو حابة تفحصي الـ Create للبوستات برابط مستقل)

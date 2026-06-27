@@ -195,9 +195,9 @@
         </div>
 
         <div class="p-3 border-t border-outline-variant text-center">
-            <a href="#" class="text-primary text-sm font-medium">
-                View all notifications
-            </a>
+<a href="{{ route('notifications.index') }}" class="text-primary text-sm font-medium">
+    View all notifications
+</a>
         </div>
     </div>
 </div>
