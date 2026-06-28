@@ -47,12 +47,26 @@ public function via(object $notifiable): array
     return $via;
     }
 
-    /**
-     * Get the mail representation of the notification.
-     */
-    public function toMail(object $notifiable): MailMessage
+      public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->markdown('mail.follow-notification');
+        // return (new GreetingMessage($notifiable->name))
+        //     ->to($notifiable->email);
+
+        return (new MailMessage)
+            ->subject('New Follower')
+            ->from('follow@write.ai', 'Write.ai')
+            ->level('info')
+            // ->view('mails.follow', [
+            //     'user' => $notifiable,
+            //     'follower' => $this->follower,
+            // ])
+            ->greeting("Hi {$notifiable->name},")
+            ->line("{$this->follower->name} started following you.")
+->action('View Profile', route('users.profile', $this->follower->username))
+
+->line('Thank you for using our application!')
+            ->salutation('Best regards,')
+        ;
     }
 
 
@@ -72,6 +86,9 @@ public function via(object $notifiable): array
 
     public function toArray(object $notifiable): array
     {
-        return $this->toDatabase($notifiable);
+        // return $this->toDatabase($notifiable);
+        return [];
+
+
     }
 }

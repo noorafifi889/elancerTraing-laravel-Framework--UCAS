@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendNotification;
 use App\Mail\GreetingMessage;
+use App\Mail\GreetingMessege;
 use App\Models\User;
 use App\Notifications\FollowNotification;
 use Illuminate\Http\Request;
@@ -30,7 +31,12 @@ if (!$exists && $follower->id != $user->id) {
 
     // ✅ نرسل فقط الـ $follower (أنت) إلى حساب الشخص الآخر ($user)
     $user->notify(new FollowNotification($follower));
+// Notification::send($users, new FollowNotification($user, $follower));
 
+// Notification::route('mail', 'info@Ztest.com')
+//     ->notify(new FollowNotification($user, $follower));
+
+//     Mail::to('m@test.ps')->send(new GreetingMessege($user->name));
 }
 
 
