@@ -14,6 +14,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
         rel="stylesheet" />
+@vite(['resources/css/app.css' ,'resources/js/app.js']);
+
 <title>{{ $title }}</title>
     <script id="tailwind-config">
         tailwind.config = {

@@ -47,10 +47,9 @@
                           <article
                 class="group border border-outline-variant rounded-xl overflow-hidden bg-white hover:border-primary transition-colors duration-300">
                 <div class="aspect-[16/9] overflow-hidden">
-                    <img alt=""
-                        class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                        data-alt="A macro photograph of high-quality cream-colored paper with deep black ink strokes, showcasing fine texture and professional calligraphy. The lighting is soft and cinematic, casting gentle shadows that emphasize the physical depth of the ink on the page. The overall aesthetic is minimalist and sophisticated, representing a premium editorial experience with high contrast and clarity."
-                        src={{ asset('storage/' . $featuredPost->cover_image) }}" />
+<img alt="{{ $featuredPost->title }}"
+     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+     src="{{ asset('storage/' . $featuredPost->cover_image) }}" />
                 </div>
                 <div class="p-8 space-y-4">
                     <div class="flex items-center gap-3 font-metadata text-metadata text-secondary">
@@ -88,14 +87,15 @@
 @endif  
             <!-- Grid of Regular Articles -->
             <div class="grid grid-cols-1 gap-12">
+                
 @forelse ($posts as $post)
-    <article class="flex flex-col md:flex-row gap-8 group">
+
+<article class="flex flex-col md:flex-row gap-8 group">
         <!-- صورة المقال -->
         <div class="w-full md:w-1/3 aspect-video md:aspect-square overflow-hidden rounded-lg border border-outline-variant">
-            <img alt="{{ $post->title }}"
-                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                 src="{{ asset('storage/' . $featuredPost->cover_image) }}" /> 
-                 <!-- 💡 استبدلي image_url بالحقل الصحيح للصورة لديكِ أو اتركي الرابط الافتراضي -->
+           <img alt="{{ $post->title }}"
+     class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+     src="{{ asset('storage/' . $post->cover_image) }}" /> 
         </div>
 
         <!-- تفاصيل المقال -->
@@ -104,11 +104,9 @@
                 <!-- اسم القسم (Category) -->
                 <span class="text-primary font-bold">{{ $post->category->name ?? 'Uncategorized' }}</span>
                 <span>•</span>
-                <!-- تاريخ النشر -->
                 <span>{{ $post->created_at->format('M d, Y') }}</span>
             </div>
 
-            <!-- عنوان المقال -->
             <h3 class="font-headline-md text-[24px] leading-snug text-on-surface group-hover:text-primary transition-colors">
                 <a href="/posts/{{ $post->slug }}">{{ $post->title }}</a>
             </h3>
@@ -138,10 +136,7 @@
 <div class="mt-8">
     {{ $posts->links() }}
 </div>
-                <!-- Article 2 -->
-           
-                <!-- Article 3 -->
-         
+            
             </div>
             <div class="pt-8 flex justify-center">
                 <button
