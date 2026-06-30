@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+
 use App\Models\Category;
 use App\Models\Post;
 use App\Models\Tag;
@@ -13,14 +14,21 @@ class HomeController extends Controller
     {
         $categories = Category::all();
         $tags = Tag::all();
+        
+        // 1. استعلام المقالات الأساسي
         $query = Post::query()
             ->published()
             ->with(['user', 'category']);
 
-        // Ctegory Filter
+        // 2. التحقق من حالة تسجيل الدخول
+        if (auth()->check()) {
+            $query->where('user_id', auth()->id());
+        }
+
+        // Category Filter
         if ($request->filled('category')) {
-            $query->whereHas('category', function ($query) use ($request) {
-                $query->where('slug', $request->category);
+            $query->whereHas('category', function ($q) use ($request) {
+                $q->where('slug', $request->category);
             });
         }
 
@@ -35,13 +43,17 @@ class HomeController extends Controller
         if ($request->discover === 'popular') {
             $query->orderByDesc('views');
         } else {
-            $query->latest(); // Explore
+            $query->latest(); 
         }
 
+        // جلب البوست المميز بناءً على الفلترة السابقة
         $featuredPost = (clone $query)->first();
 
+        // جلب باقي البوستات
         $posts = (clone $query)
-            ->when($featuredPost, fn ($q) => $q->where('id', '!=', $featuredPost->id))
+            ->when($featuredPost, function ($q) use ($featuredPost) {
+                return $q->where('id', '!=', $featuredPost->id);
+            })
             ->paginate(3)
             ->withQueryString();
 
