@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
@@ -46,7 +47,17 @@ public function via(object $notifiable): array
 
     return $via;
     }
-
+ public function toBroadcast(object $notifiable):array |BroadcastMessage{
+      return [
+            'title' => 'New follower',
+            'body' => "{$this->follower->name} started following you.", // سيجلب اسم الفلور الصحيح الآن
+            'link' => route('users.profile', $this->follower->id),
+            'meta' => [
+                'follower_id' => $this->follower->id,
+                'follower_avatar' => $this->follower->avatar,
+            ],
+        ];
+ }
       public function toMail(object $notifiable): MailMessage
     {
         // return (new GreetingMessage($notifiable->name))
